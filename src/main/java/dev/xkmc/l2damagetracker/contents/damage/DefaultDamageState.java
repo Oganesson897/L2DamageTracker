@@ -1,8 +1,7 @@
 package dev.xkmc.l2damagetracker.contents.damage;
 
+import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.init.L2Library;
-import dev.xkmc.l2library.init.data.L2DamageTypes;
-import dev.xkmc.l2library.init.events.damage.DamageState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;

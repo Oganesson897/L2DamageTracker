@@ -1,14 +1,14 @@
 package dev.xkmc.l2damagetracker.events;
 
-import dev.xkmc.l2library.init.L2Library;
-import dev.xkmc.l2library.init.data.L2DamageTypes;
-import dev.xkmc.l2library.init.events.attack.AttackCache;
-import dev.xkmc.l2library.init.events.attack.AttackListener;
-import dev.xkmc.l2library.init.events.attack.CreateSourceEvent;
-import dev.xkmc.l2library.init.events.attack.PlayerAttackCache;
-import dev.xkmc.l2library.init.events.damage.DefaultDamageState;
-import dev.xkmc.l2library.init.materials.generic.ExtraToolConfig;
-import dev.xkmc.l2library.init.materials.generic.GenericTieredItem;
+import dev.xkmc.l2damagetracker.contents.attack.AttackCache;
+import dev.xkmc.l2damagetracker.contents.attack.AttackListener;
+import dev.xkmc.l2damagetracker.contents.attack.CreateSourceEvent;
+import dev.xkmc.l2damagetracker.contents.attack.PlayerAttackCache;
+import dev.xkmc.l2damagetracker.contents.damage.DefaultDamageState;
+import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
+import dev.xkmc.l2damagetracker.contents.materials.generic.GenericTieredItem;
+import dev.xkmc.l2damagetracker.init.L2DamageTracker;
+import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -19,8 +19,8 @@ public class GeneralAttackListener implements AttackListener {
 	@Override
 	public boolean onCriticalHit(PlayerAttackCache cache, CriticalHitEvent event) {
 		Player player = event.getEntity();
-		double cr = player.getAttributeValue(L2Library.CRIT_RATE.get());
-		double cd = player.getAttributeValue(L2Library.CRIT_DMG.get());
+		double cr = player.getAttributeValue(L2DamageTracker.CRIT_RATE.get());
+		double cd = player.getAttributeValue(L2DamageTracker.CRIT_DMG.get());
 		if (event.isVanillaCritical()) {
 			event.setDamageModifier((float) (event.getDamageModifier() + cd - 0.5));
 		} else if (player.getRandom().nextDouble() < cr) {

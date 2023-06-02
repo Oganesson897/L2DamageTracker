@@ -1,6 +1,5 @@
 package dev.xkmc.l2damagetracker.init.data;
 
-import dev.xkmc.l2library.init.data.L2ConfigManager;
 import dev.xkmc.l2library.serial.config.BaseConfig;
 import dev.xkmc.l2library.serial.config.CollectType;
 import dev.xkmc.l2library.serial.config.ConfigCollect;
@@ -14,7 +13,7 @@ import java.util.HashSet;
 public class ArmorEffectConfig extends BaseConfig {
 
 	public static ArmorEffectConfig get() {
-		return L2ConfigManager.ARMOR.getMerged();
+		return L2DTConfigManager.ARMOR.getMerged();
 	}
 
 	@SerialClass.SerialField

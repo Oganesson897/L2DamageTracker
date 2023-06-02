@@ -1,6 +1,6 @@
 package dev.xkmc.l2damagetracker.init.data;
 
-import dev.xkmc.l2library.init.events.damage.DamageWrapperTagProvider;
+import dev.xkmc.l2damagetracker.contents.damage.DamageWrapperTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;

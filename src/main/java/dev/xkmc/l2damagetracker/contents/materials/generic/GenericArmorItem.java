@@ -2,7 +2,6 @@ package dev.xkmc.l2damagetracker.contents.materials.generic;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import dev.xkmc.l2library.init.materials.generic.ExtraArmorConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -22,9 +21,9 @@ import java.util.function.Consumer;
 
 public class GenericArmorItem extends ArmorItem {
 
-	private final dev.xkmc.l2library.init.materials.generic.ExtraArmorConfig config;
+	private final ExtraArmorConfig config;
 
-	public GenericArmorItem(ArmorMaterial material, Type slot, Properties prop, dev.xkmc.l2library.init.materials.generic.ExtraArmorConfig config) {
+	public GenericArmorItem(ArmorMaterial material, Type slot, Properties prop, ExtraArmorConfig config) {
 		super(material, slot, prop);
 		this.config = config;
 	}

@@ -2,11 +2,12 @@ package dev.xkmc.l2damagetracker.init;
 
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
+import dev.xkmc.l2damagetracker.init.data.L2DTConfigManager;
+import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.base.L2Registrate;
-import dev.xkmc.l2library.init.data.L2DamageTypes;
-import dev.xkmc.l2library.init.events.attack.AttackEventHandler;
 import dev.xkmc.l2library.serial.config.PacketHandlerWithConfig;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,7 @@ public class L2DamageTracker {
 
 	public L2DamageTracker() {
 		L2DamageTypes.register();
+		L2DTConfigManager.register();
 		AttackEventHandler.register(0, new GeneralAttackListener());
 		REGISTRATE.addDataGenerator(ProviderType.LANG, L2DTLangData::genLang);
 	}

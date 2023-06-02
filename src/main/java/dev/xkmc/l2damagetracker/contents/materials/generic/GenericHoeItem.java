@@ -2,8 +2,6 @@ package dev.xkmc.l2damagetracker.contents.materials.generic;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import dev.xkmc.l2library.init.materials.generic.ExtraToolConfig;
-import dev.xkmc.l2library.init.materials.generic.GenericTieredItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -27,9 +25,9 @@ import java.util.function.Consumer;
 
 public class GenericHoeItem extends HoeItem implements GenericTieredItem {
 
-	private final dev.xkmc.l2library.init.materials.generic.ExtraToolConfig config;
+	private final ExtraToolConfig config;
 
-	public GenericHoeItem(Tier tier, int damage, float speed, Properties prop, dev.xkmc.l2library.init.materials.generic.ExtraToolConfig config) {
+	public GenericHoeItem(Tier tier, int damage, float speed, Properties prop, ExtraToolConfig config) {
 		super(tier, damage, speed, prop);
 		this.config = config;
 	}

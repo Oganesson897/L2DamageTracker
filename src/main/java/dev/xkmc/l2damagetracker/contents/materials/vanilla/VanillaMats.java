@@ -1,11 +1,10 @@
 package dev.xkmc.l2damagetracker.contents.materials.vanilla;
 
-import dev.xkmc.l2library.init.materials.api.IMatToolType;
-import dev.xkmc.l2library.init.materials.api.ITool;
-import dev.xkmc.l2library.init.materials.api.IToolStats;
-import dev.xkmc.l2library.init.materials.api.ToolConfig;
-import dev.xkmc.l2library.init.materials.generic.ExtraToolConfig;
-import dev.xkmc.l2library.init.materials.vanilla.GenItemVanillaType;
+import dev.xkmc.l2damagetracker.contents.materials.api.IMatToolType;
+import dev.xkmc.l2damagetracker.contents.materials.api.ITool;
+import dev.xkmc.l2damagetracker.contents.materials.api.IToolStats;
+import dev.xkmc.l2damagetracker.contents.materials.api.ToolConfig;
+import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 

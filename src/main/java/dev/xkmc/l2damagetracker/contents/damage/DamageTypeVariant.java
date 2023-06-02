@@ -1,9 +1,5 @@
 package dev.xkmc.l2damagetracker.contents.damage;
 
-import dev.xkmc.l2library.init.events.damage.DamageState;
-import dev.xkmc.l2library.init.events.damage.DamageTypeRoot;
-import dev.xkmc.l2library.init.events.damage.DamageTypeWrapper;
-import dev.xkmc.l2library.init.events.damage.DamageWrapperTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -19,11 +15,11 @@ import java.util.TreeSet;
 public final class DamageTypeVariant implements DamageTypeWrapper {
 
 	private final ResourceKey<DamageType> type;
-	private final dev.xkmc.l2library.init.events.damage.DamageTypeRoot root;
+	private final DamageTypeRoot root;
 	private final int key;
 	private final TreeSet<DamageState> enabledStates;
 
-	public DamageTypeVariant(String modid, dev.xkmc.l2library.init.events.damage.DamageTypeRoot root, int key, TreeSet<DamageState> set) {
+	public DamageTypeVariant(String modid, DamageTypeRoot root, int key, TreeSet<DamageState> set) {
 		this.root = root;
 		this.key = key;
 		this.enabledStates = set;

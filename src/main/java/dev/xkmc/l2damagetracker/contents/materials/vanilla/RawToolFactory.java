@@ -1,6 +1,6 @@
 package dev.xkmc.l2damagetracker.contents.materials.vanilla;
 
-import dev.xkmc.l2library.init.materials.generic.ExtraToolConfig;
+import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 

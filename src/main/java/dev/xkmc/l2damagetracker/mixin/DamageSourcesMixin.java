@@ -1,7 +1,7 @@
 package dev.xkmc.l2damagetracker.mixin;
 
-import dev.xkmc.l2library.init.events.attack.AttackEventHandler;
-import dev.xkmc.l2library.init.events.attack.CreateSourceEvent;
+import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
+import dev.xkmc.l2damagetracker.contents.attack.CreateSourceEvent;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;

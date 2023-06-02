@@ -1,9 +1,5 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
-import dev.xkmc.l2library.init.events.attack.AttackEventHandler;
-import dev.xkmc.l2library.init.events.attack.DamageModifier;
-import dev.xkmc.l2library.init.events.attack.PlayerAttackCache;
-import dev.xkmc.l2library.init.events.attack.Stage;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -40,8 +36,8 @@ public class AttackCache {
 	private float damage_modified;
 	private float damage_dealt;
 
-	private final List<dev.xkmc.l2library.init.events.attack.DamageModifier> modifierHurt = new ArrayList<>();
-	private final List<dev.xkmc.l2library.init.events.attack.DamageModifier> modifierDealt = new ArrayList<>();
+	private final List<DamageModifier> modifierHurt = new ArrayList<>();
+	private final List<DamageModifier> modifierDealt = new ArrayList<>();
 
 	void pushAttackPre(LivingAttackEvent event) {
 		stage = Stage.HURT_PRE;
@@ -62,10 +58,10 @@ public class AttackCache {
 		AttackEventHandler.getListeners().forEach(e -> e.onHurt(this, weapon));
 		damageFrozen = true;
 		damage_modified = event.getAmount();
-		Comparator<dev.xkmc.l2library.init.events.attack.DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
-		comp = comp.thenComparingInt(dev.xkmc.l2library.init.events.attack.DamageModifier::priority);
+		Comparator<DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
+		comp = comp.thenComparingInt(DamageModifier::priority);
 		modifierHurt.sort(comp);
-		for (dev.xkmc.l2library.init.events.attack.DamageModifier mod : modifierHurt) {
+		for (DamageModifier mod : modifierHurt) {
 			damage_modified = mod.modify(damage_modified);
 		}
 		if (damage_modified != event.getAmount()) {
@@ -84,10 +80,10 @@ public class AttackCache {
 		damage = event;
 		AttackEventHandler.getListeners().forEach(e -> e.onDamage(this, weapon));
 		damage_dealt = event.getAmount();
-		Comparator<dev.xkmc.l2library.init.events.attack.DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
-		comp = comp.thenComparingInt(dev.xkmc.l2library.init.events.attack.DamageModifier::priority);
+		Comparator<DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
+		comp = comp.thenComparingInt(DamageModifier::priority);
 		modifierDealt.sort(comp);
-		for (dev.xkmc.l2library.init.events.attack.DamageModifier mod : modifierDealt) {
+		for (DamageModifier mod : modifierDealt) {
 			damage_dealt = mod.modify(damage_dealt);
 		}
 		if (damage_dealt != event.getAmount()) {
@@ -164,7 +160,7 @@ public class AttackCache {
 		return damage_modified;
 	}
 
-	public void addHurtModifier(dev.xkmc.l2library.init.events.attack.DamageModifier mod) {
+	public void addHurtModifier(DamageModifier mod) {
 		if (damageFrozen)
 			throw new IllegalStateException("modify hurt damage only on onHurt event.");
 		this.modifierHurt.add(mod);

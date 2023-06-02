@@ -1,10 +1,9 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
+import dev.xkmc.l2damagetracker.contents.damage.DamageState;
+import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
+import dev.xkmc.l2damagetracker.contents.damage.DamageTypeWrapper;
 import dev.xkmc.l2library.init.L2Library;
-import dev.xkmc.l2library.init.events.attack.PlayerAttackCache;
-import dev.xkmc.l2library.init.events.damage.DamageState;
-import dev.xkmc.l2library.init.events.damage.DamageTypeRoot;
-import dev.xkmc.l2library.init.events.damage.DamageTypeWrapper;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;

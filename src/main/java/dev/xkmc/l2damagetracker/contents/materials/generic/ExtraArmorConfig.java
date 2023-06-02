@@ -1,9 +1,8 @@
 package dev.xkmc.l2damagetracker.contents.materials.generic;
 
 import com.google.common.collect.Multimap;
-import dev.xkmc.l2library.init.data.ArmorEffectConfig;
-import dev.xkmc.l2library.init.data.LangData;
-import dev.xkmc.l2library.init.materials.generic.GenericArmorItem;
+import dev.xkmc.l2damagetracker.init.L2DTLangData;
+import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -89,7 +88,7 @@ public class ExtraArmorConfig {
 		for (var e : set) {
 			map.put(ForgeRegistries.MOB_EFFECTS.getKey(e), e);
 		}
-		MutableComponent comp = LangData.ARMOR_IMMUNE.get();
+		MutableComponent comp = L2DTLangData.ARMOR_IMMUNE.get();
 		boolean comma = false;
 		for (var e : map.values()) {
 			if (comma) comp = comp.append(", ");

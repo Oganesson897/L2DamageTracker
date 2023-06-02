@@ -1,8 +1,5 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
-import dev.xkmc.l2library.init.events.attack.AttackCache;
-import dev.xkmc.l2library.init.events.attack.CreateSourceEvent;
-import dev.xkmc.l2library.init.events.attack.PlayerAttackCache;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 

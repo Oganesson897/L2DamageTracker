@@ -1,9 +1,7 @@
 package dev.xkmc.l2damagetracker.contents.materials.api;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
-import dev.xkmc.l2library.init.materials.api.IMatArmorType;
-import dev.xkmc.l2library.init.materials.api.IMatToolType;
-import dev.xkmc.l2library.init.materials.vanilla.Tools;
+import dev.xkmc.l2damagetracker.contents.materials.vanilla.Tools;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;

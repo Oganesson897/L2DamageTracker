@@ -1,8 +1,7 @@
 package dev.xkmc.l2damagetracker.contents.materials.vanilla;
 
-import dev.xkmc.l2library.init.materials.api.ITool;
-import dev.xkmc.l2library.init.materials.generic.*;
-import dev.xkmc.l2library.init.materials.vanilla.RawToolFactory;
+import dev.xkmc.l2damagetracker.contents.materials.api.ITool;
+import dev.xkmc.l2damagetracker.contents.materials.generic.*;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -18,7 +17,7 @@ public enum Tools implements ITool {
 
 	final TagKey<Item> tag;
 
-	private final dev.xkmc.l2library.init.materials.vanilla.RawToolFactory fac;
+	private final RawToolFactory fac;
 	private final float damage_scale, damage_offset, speed_scale;
 
 	Tools(TagKey<Item> tag, RawToolFactory fac, float damage_scale, float damage_offset, float speed_scale) {

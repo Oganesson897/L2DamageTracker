@@ -1,8 +1,5 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
-import dev.xkmc.l2library.init.events.attack.AttackEventHandler;
-import dev.xkmc.l2library.init.events.attack.AttackListener;
-import dev.xkmc.l2library.init.events.attack.Stage;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;

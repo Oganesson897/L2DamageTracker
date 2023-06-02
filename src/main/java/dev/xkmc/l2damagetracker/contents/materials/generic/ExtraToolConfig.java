@@ -1,10 +1,10 @@
 package dev.xkmc.l2damagetracker.contents.materials.generic;
 
 import com.google.common.collect.Multimap;
+import dev.xkmc.l2damagetracker.contents.attack.AttackCache;
+import dev.xkmc.l2damagetracker.contents.materials.api.IMatVanillaType;
+import dev.xkmc.l2damagetracker.contents.materials.vanilla.GenItemVanillaType;
 import dev.xkmc.l2library.base.effects.EffectUtil;
-import dev.xkmc.l2library.init.events.attack.AttackCache;
-import dev.xkmc.l2library.init.materials.api.IMatVanillaType;
-import dev.xkmc.l2library.init.materials.vanilla.GenItemVanillaType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
