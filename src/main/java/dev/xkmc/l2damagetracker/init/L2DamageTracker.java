@@ -12,6 +12,7 @@ import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.base.L2Registrate;
 import dev.xkmc.l2library.serial.config.ConfigTypeEntry;
 import dev.xkmc.l2library.serial.config.PacketHandlerWithConfig;
+import dev.xkmc.l2tabs.init.L2Tabs;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,9 +34,7 @@ public class L2DamageTracker {
 
 	public static final L2Registrate REGISTRATE = new L2Registrate(MODID);
 
-	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1,
-			"l2damagetracker_config"
-	);
+	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1);
 
 	public static final RegistryEntry<Attribute> CRIT_RATE = REGISTRATE.simple("crit_rate", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.crit_rate", 0, 0, 1).setSyncable(true));
 	public static final RegistryEntry<Attribute> CRIT_DMG = REGISTRATE.simple("crit_damage", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.crit_damage", 0.5, 0, 1000).setSyncable(true));
@@ -63,7 +63,9 @@ public class L2DamageTracker {
 		var pvd = event.getLookupProvider();
 		var helper = event.getExistingFileHelper();
 		new L2DamageTypes(output, pvd, helper).generate(gen, event.getGenerator());
-		event.getGenerator().addProvider(event.includeServer(), new DTAttributeConfigGen(event.getGenerator()));
+		if (ModList.get().isLoaded(L2Tabs.MODID)) {
+			event.getGenerator().addProvider(event.includeServer(), new DTAttributeConfigGen(event.getGenerator()));
+		}
 	}
 
 	@SubscribeEvent
