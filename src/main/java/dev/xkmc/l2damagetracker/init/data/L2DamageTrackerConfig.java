@@ -1,4 +1,4 @@
-package dev.xkmc.l2damagetracker.init;
+package dev.xkmc.l2damagetracker.init.data;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;

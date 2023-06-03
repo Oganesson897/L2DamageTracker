@@ -7,6 +7,7 @@ import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
 import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
 import dev.xkmc.l2damagetracker.init.data.DTAttributeConfigGen;
+import dev.xkmc.l2damagetracker.init.data.L2DTLangData;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.base.L2Registrate;
 import dev.xkmc.l2library.serial.config.ConfigTypeEntry;

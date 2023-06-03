@@ -1,4 +1,4 @@
-package dev.xkmc.l2damagetracker.init;
+package dev.xkmc.l2damagetracker.init.data;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.network.chat.Component;
