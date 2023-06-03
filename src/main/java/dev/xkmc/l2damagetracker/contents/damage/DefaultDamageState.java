@@ -1,5 +1,6 @@
 package dev.xkmc.l2damagetracker.contents.damage;
 
+import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ public enum DefaultDamageState implements DamageState {
 
 	@Override
 	public ResourceLocation getId() {
-		return new ResourceLocation(L2Library.MODID, name().toLowerCase(Locale.ROOT));
+		return new ResourceLocation(L2DamageTracker.MODID, name().toLowerCase(Locale.ROOT));
 	}
 
 }

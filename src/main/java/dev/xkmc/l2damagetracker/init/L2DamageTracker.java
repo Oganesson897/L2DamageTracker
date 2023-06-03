@@ -5,9 +5,11 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
-import dev.xkmc.l2damagetracker.init.data.L2DTConfigManager;
+import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
+import dev.xkmc.l2damagetracker.init.data.DTAttributeConfigGen;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
 import dev.xkmc.l2library.base.L2Registrate;
+import dev.xkmc.l2library.serial.config.ConfigTypeEntry;
 import dev.xkmc.l2library.serial.config.PacketHandlerWithConfig;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -37,10 +39,11 @@ public class L2DamageTracker {
 	public static final RegistryEntry<Attribute> CRIT_DMG = REGISTRATE.simple("crit_damage", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.crit_damage", 0.5, 0, 1000).setSyncable(true));
 	public static final RegistryEntry<Attribute> BOW_STRENGTH = REGISTRATE.simple("bow_strength", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.bow_strength", 1, 0, 1000).setSyncable(true));
 
+	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
+			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
 
 	public L2DamageTracker() {
 		L2DamageTypes.register();
-		L2DTConfigManager.register();
 		AttackEventHandler.register(0, new GeneralAttackListener());
 		REGISTRATE.addDataGenerator(ProviderType.LANG, L2DTLangData::genLang);
 	}
@@ -59,17 +62,12 @@ public class L2DamageTracker {
 		var pvd = event.getLookupProvider();
 		var helper = event.getExistingFileHelper();
 		new L2DamageTypes(output, pvd, helper).generate(gen, event.getGenerator());
+		event.getGenerator().addProvider(event.includeServer(), new DTAttributeConfigGen(event.getGenerator()));
 	}
 
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
 		DamageTypeRoot.generateAll();
-		event.enqueueWork(() -> {
-			//TODO
-			//AttributeEntry.add(CRIT_RATE, true, 11000);
-			//AttributeEntry.add(CRIT_DMG, true, 12000);
-			//AttributeEntry.add(BOW_STRENGTH, true, 12000);
-		});
 	}
 
 }

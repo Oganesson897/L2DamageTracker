@@ -1,0 +1,19 @@
+{
+  "list": [
+    {
+      "id": "l2damagetracker:crit_rate",
+      "order": 11000,
+      "usePercent": true
+    },
+    {
+      "id": "l2damagetracker:crit_damage",
+      "order": 12000,
+      "usePercent": true
+    },
+    {
+      "id": "l2damagetracker:bow_strength",
+      "order": 13000,
+      "usePercent": true
+    }
+  ]
+}

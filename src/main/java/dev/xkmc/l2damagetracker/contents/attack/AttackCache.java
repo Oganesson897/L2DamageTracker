@@ -155,7 +155,7 @@ public class AttackCache {
 	}
 
 	public float getPreDamage() {
-		if (stage.ordinal() <= Stage.ACTUALLY_HURT_PRE.ordinal())
+		if (!damageMaximized)
 			throw new IllegalStateException("dealt damage not calculated yet");
 		return damage_modified;
 	}
