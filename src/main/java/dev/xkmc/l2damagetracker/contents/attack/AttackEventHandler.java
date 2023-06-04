@@ -28,11 +28,7 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid = L2Library.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class AttackEventHandler {
 
-	/**
-	 * use register instead
-	 */
-	@Deprecated
-	public static final Map<Integer, AttackListener> LISTENERS = new TreeMap<>();
+	private static final Map<Integer, AttackListener> LISTENERS = new TreeMap<>();
 
 	/**
 	 * 0000 - L2Library 		General Attack Listener: crit calculation, create source

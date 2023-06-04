@@ -1,8 +1,8 @@
 package dev.xkmc.l2damagetracker.contents.materials.generic;
 
 import com.google.common.collect.Multimap;
-import dev.xkmc.l2damagetracker.init.data.L2DTLangData;
 import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
+import dev.xkmc.l2damagetracker.init.data.L2DTLangData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

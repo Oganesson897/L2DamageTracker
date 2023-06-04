@@ -9,9 +9,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class AttackCache {
@@ -58,12 +56,7 @@ public class AttackCache {
 		AttackEventHandler.getListeners().forEach(e -> e.onHurt(this, weapon));
 		damageFrozen = true;
 		damage_modified = event.getAmount();
-		Comparator<DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
-		comp = comp.thenComparingInt(DamageModifier::priority);
-		modifierHurt.sort(comp);
-		for (DamageModifier mod : modifierHurt) {
-			damage_modified = mod.modify(damage_modified);
-		}
+		damage_modified = accumulate(damage_modified, modifierHurt);
 		if (damage_modified != event.getAmount()) {
 			event.setAmount(damage_modified);
 		}
@@ -80,12 +73,7 @@ public class AttackCache {
 		damage = event;
 		AttackEventHandler.getListeners().forEach(e -> e.onDamage(this, weapon));
 		damage_dealt = event.getAmount();
-		Comparator<DamageModifier> comp = Comparator.comparingInt(e -> e.order().ordinal());
-		comp = comp.thenComparingInt(DamageModifier::priority);
-		modifierDealt.sort(comp);
-		for (DamageModifier mod : modifierDealt) {
-			damage_dealt = mod.modify(damage_dealt);
-		}
+		damage_dealt = accumulate(damage_dealt, modifierDealt);
 		if (damage_dealt != event.getAmount()) {
 			event.setAmount(damage_dealt);
 		}
@@ -183,4 +171,23 @@ public class AttackCache {
 		if (attacker == null) attacker = prev.getAttacker();
 		if (weapon.isEmpty()) weapon = prev.getWeapon();
 	}
+
+	private static float accumulate(float val, List<DamageModifier> mod) {
+		Map<DamageModifier.Order, Set<DamageModifier>> map = new TreeMap<>();
+		for (var e : mod) {
+			if (!map.containsKey(e.order())) {
+				map.put(e.order(), new TreeSet<>(Comparator.comparing(DamageModifier::priority)));
+			}
+			map.get(e.order()).add(e);
+		}
+		for (var ent : map.entrySet()) {
+			float num = ent.getKey().type.start.start(val);
+			for (var e : ent.getValue()) {
+				num = e.modify(num);
+			}
+			val = ent.getKey().type.end.end(val, num);
+		}
+		return val;
+	}
+
 }

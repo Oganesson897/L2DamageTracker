@@ -2,7 +2,6 @@ package dev.xkmc.l2damagetracker.contents.damage;
 
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
-import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
@@ -27,6 +26,11 @@ public enum DefaultDamageState implements DamageState {
 		for (var tag : tags) {
 			collector.accept(tag);
 		}
+	}
+
+	@Override
+	public void removeTags(Consumer<TagKey<DamageType>> collector) {
+
 	}
 
 	@Override

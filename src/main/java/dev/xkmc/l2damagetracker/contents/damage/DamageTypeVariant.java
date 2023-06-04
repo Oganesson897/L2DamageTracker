@@ -68,6 +68,11 @@ public final class DamageTypeVariant implements DamageTypeWrapper {
 				state.gatherTags(tags::add);
 			}
 		}
+		for (DamageState state : root.states) {
+			if (isEnabled(state)) {
+				state.removeTags(tags::remove);
+			}
+		}
 		for (TagKey<DamageType> tag : tags) {
 			gen.tag(tag).add(type);
 		}

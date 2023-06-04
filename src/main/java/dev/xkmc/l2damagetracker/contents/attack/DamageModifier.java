@@ -8,24 +8,32 @@ public interface DamageModifier {
 		return new Nonlinear(Order.PRE_NONLINEAR, priority, func);
 	}
 
-	static DamageModifier multPre(float val) {
+	static DamageModifier multAttr(float val) {
 		return new Multiplicative(Order.PRE_MULTIPLICATIVE, val);
 	}
 
-	static DamageModifier addPre(float val) {
+	static DamageModifier add(float val) {
 		return new Additive(Order.PRE_ADDITIVE, val);
 	}
 
-	static DamageModifier multPost(float val) {
+	static DamageModifier multBase(float val) {
+		return new Additive(Order.POST_MULT_BASE, val);
+	}
+
+	static DamageModifier multTotal(float val) {
 		return new Multiplicative(Order.POST_MULTIPLICATIVE, val);
 	}
 
-	static DamageModifier nonlinearPost(int priority, Float2FloatFunction func) {
+	static DamageModifier nonlinearMiddle(int priority, Float2FloatFunction func) {
 		return new Nonlinear(Order.POST_NONLINEAR, priority, func);
 	}
 
-	static DamageModifier addPost(float val) {
+	static DamageModifier addExtra(float val) {
 		return new Additive(Order.POST_ADDITIVE, val);
+	}
+
+	static DamageModifier nonlinearFinal(int priority, Float2FloatFunction func) {
+		return new Nonlinear(Order.END_NONLINEAR, priority, func);
 	}
 
 	enum Time {
@@ -36,30 +44,37 @@ public interface DamageModifier {
 	}
 
 	enum Type {
-		ADDITIVE,
-		MULTIPLICATIVE,
-		NONLINEAR
+		ADDITIVE(v -> 0, (v, n) -> v + n),
+		MULTIPLICATIVE(v -> 1, (v, n) -> v * n),
+		NONLINEAR(v -> v, (v, n) -> n);
+
+		public final Start start;
+		public final End end;
+
+		Type(Start start, End end) {
+			this.start = start;
+			this.end = end;
+		}
+
+		public interface Start {
+
+			float start(float val);
+
+		}
+
+		public interface End {
+
+			float end(float val, float num);
+
+		}
+
 	}
 
-	/**
-	 * Damage modification type <ul>
-	 * <li>PRE_NONLINEAR: nonlinear modification of damage before everything else.</li>
-	 * <li>PRE_MULTIPLICATIVE: linear multiplicative modification of damage before additives.
-	 * Usually used for damage scaling based on original damage only. </li>
-	 * <li>PRE_ADDITIVE: nonlinear modification of damage before everything else.
-	 * Regular additive damage should be here.</li>
-	 * <li>POST_MULTIPLICATIVE: nonlinear modification of damage before everything else.
-	 * Usually used for things you want to scale on top of additive damages.</li>
-	 * <li>POST_NONLINEAR: default choice for nonlinear modification. It's after all regular modifications.</li>
-	 * <li>POST_ADDITIVE: additive linear modification of damage at the end.
-	 * Usually used for things you don't want to be scaled by others, such as additional flat damage.</li>
-	 * <li>END_NONLINEAR: nonlinear modification of damage after everything else.</li>
-	 * </ul>
-	 */
 	enum Order {
 		PRE_NONLINEAR(Type.NONLINEAR),
 		PRE_MULTIPLICATIVE(Type.MULTIPLICATIVE),
 		PRE_ADDITIVE(Type.ADDITIVE),
+		POST_MULT_BASE(Type.MULTIPLICATIVE),
 		POST_MULTIPLICATIVE(Type.MULTIPLICATIVE),
 		POST_NONLINEAR(Type.NONLINEAR),
 		POST_ADDITIVE(Type.ADDITIVE),

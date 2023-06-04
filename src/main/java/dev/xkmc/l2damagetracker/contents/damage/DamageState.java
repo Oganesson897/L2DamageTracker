@@ -16,6 +16,8 @@ public interface DamageState {
 
 	void gatherTags(Consumer<TagKey<DamageType>> collector);
 
+	void removeTags(Consumer<TagKey<DamageType>> collector);
+
 	ResourceLocation getId();
 
 	default boolean overrides(DamageState state) {
