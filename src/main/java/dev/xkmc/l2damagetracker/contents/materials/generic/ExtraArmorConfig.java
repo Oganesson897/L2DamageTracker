@@ -33,7 +33,7 @@ public class ExtraArmorConfig {
 		double raw = amount * damage_chance;
 		int floor = (int) Math.floor(raw);
 		double rem = raw - floor;
-		return floor + (entity.level.random.nextDouble() < rem ? 1 : 0);
+		return floor + (entity.level().random.nextDouble() < rem ? 1 : 0);
 	}
 
 	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {

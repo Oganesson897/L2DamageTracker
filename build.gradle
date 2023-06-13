@@ -26,8 +26,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    //mappings channel: 'official', version: "${minecraft_version}"
-    mappings channel: 'parchment', version: '1.19.3-2023.03.12-1.19.4'
+    mappings channel: 'official', version: "${minecraft_version}"
+    //mappings channel: 'parchment', version: '1.19.3-2023.03.12-1.19.4'
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -123,18 +123,18 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     implementation fg.deobf("dev.xkmc.l2library:l2library:${l2library_version}-slim")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
-    implementation fg.deobf("dev.xkmc.l2serial:l2serial:1.1.2")
-    implementation fg.deobf("dev.xkmc.l2tabs:l2tabs:0.0.4")
+    implementation fg.deobf("dev.xkmc.l2serial:l2serial:1.2.0")
+    implementation fg.deobf("dev.xkmc.l2tabs:l2tabs:0.1.0")
 
     implementation fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    implementation fg.deobf('curse.maven:the-twilight-forest-227639:4516391')
+    //implementation fg.deobf('curse.maven:the-twilight-forest-227639:4516391')
 
-    runtimeOnly fg.deobf('curse.maven:wthit-forge-455982:4512108')
-    runtimeOnly fg.deobf('curse.maven:badpackets-615134:4438956')
-    runtimeOnly fg.deobf('curse.maven:attributefix-280510:4445193')
-    runtimeOnly fg.deobf('curse.maven:max-health-fix-492246:4447240')
+    //runtimeOnly fg.deobf('curse.maven:wthit-forge-455982:4512108')
+    //runtimeOnly fg.deobf('curse.maven:badpackets-615134:4438956')
+    //runtimeOnly fg.deobf('curse.maven:attributefix-280510:4445193')
+    //runtimeOnly fg.deobf('curse.maven:max-health-fix-492246:4447240')
 
     //runtimeOnly fg.deobf('curse.maven:charm-of-undying-316873:3927421')
     //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2-76")
