@@ -16,21 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = L2DamageTracker.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GeneralEventHandler {
 
-	@SubscribeEvent
-	public static void onEntityJoin(EntityJoinLevelEvent event) {
-		if (event.getEntity() instanceof AbstractArrow arrow) {
-			if (arrow.getOwner() instanceof Player player) {
-				double cr = player.getAttributeValue(L2DamageTracker.CRIT_RATE.get());
-				double cd = player.getAttributeValue(L2DamageTracker.CRIT_DMG.get());
-				double strength = player.getAttributeValue(L2DamageTracker.BOW_STRENGTH.get());
-				if (player.getRandom().nextDouble() < cr) {
-					strength *= (1 + cd);
-				}
-				arrow.setBaseDamage((float) (arrow.getBaseDamage() * strength));
-			}
-		}
-	}
-
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onPotionTest(MobEffectEvent.Applicable event) {
 		for (EquipmentSlot slot : EquipmentSlot.values()) {

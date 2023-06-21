@@ -168,8 +168,8 @@ public class AttackCache {
 
 	public void setupPlayer(PlayerAttackCache prev) {
 		player = prev;
-		if (attacker == null) attacker = prev.getAttacker();
-		if (weapon.isEmpty()) weapon = prev.getWeapon();
+		attacker = prev.getAttacker();
+		if (!prev.getWeapon().isEmpty()) weapon = prev.getWeapon();
 	}
 
 	private static float accumulate(float val, List<DamageModifier> mod) {

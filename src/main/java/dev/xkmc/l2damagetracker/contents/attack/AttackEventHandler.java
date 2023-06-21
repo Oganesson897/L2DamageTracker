@@ -2,9 +2,7 @@ package dev.xkmc.l2damagetracker.contents.attack;
 
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2library.init.L2Library;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = L2Library.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = L2DamageTracker.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class AttackEventHandler {
 
 	private static final Map<Integer, AttackListener> LISTENERS = new TreeMap<>();
@@ -112,13 +110,13 @@ public class AttackEventHandler {
 			cache = new AttackCache();
 			CACHE.put(id, cache);
 		}
-		if (prev != null)
-			cache.setupPlayer(prev);
 		DamageSource source = event.getSource();
 		if (source.getEntity() instanceof LivingEntity entity) { // direct damage only
 			ItemStack stack = entity.getMainHandItem();
 			cache.setupAttackerProfile(entity, stack);
 		}
+		if (prev != null)
+			cache.setupPlayer(prev);
 		cache.pushAttackPre(event);
 	}
 
@@ -184,7 +182,7 @@ public class AttackEventHandler {
 	}
 
 	@Nullable
-	public static ResourceKey<DamageType> onDamageSourceCreate(CreateSourceEvent event) {
+	public static DamageSource onDamageSourceCreate(CreateSourceEvent event) {
 		if (event.getAttacker().level().isClientSide())
 			return null;
 		if (PLAYER.containsKey(event.getAttacker().getUUID())) {
@@ -192,7 +190,7 @@ public class AttackEventHandler {
 		}
 		getListeners().forEach(e -> e.onCreateSource(event));
 		if (event.getResult() == null) return null;
-		return event.getResult().type();
+		return new DamageSource(event.getRegistry().getHolderOrThrow(event.getResult().type()), event.getDirect(), event.getAttacker());
 	}
 
 }

@@ -53,7 +53,7 @@ public class PlayerAttackCache {
 		return strength;
 	}
 
-	void setupAttackerProfile(LivingEntity entity, ItemStack stack) {
+	public void setupAttackerProfile(LivingEntity entity, ItemStack stack) {
 		attacker = entity;
 		weapon = stack;
 	}

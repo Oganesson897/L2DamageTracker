@@ -29,7 +29,7 @@ public enum L2DTLangData {
 		}
 		pvd.add("attribute.name.crit_rate", "Crit Rate");
 		pvd.add("attribute.name.crit_damage", "Crit Damage");
-		pvd.add("attribute.name.bow_strength", "Bow Strength");
+		pvd.add("attribute.name.bow_strength", "Projectile Strength");
 	}
 
 }

@@ -16,8 +16,8 @@ public class CreateSourceEvent {
 
 	private final Registry<DamageType> registry;
 	private final ResourceKey<DamageType> original;
-	private final LivingEntity attacker;
-	private final Entity direct;
+	private LivingEntity attacker;
+	private Entity direct;
 
 	@Nullable
 	private PlayerAttackCache playerAttackCache = null;
@@ -44,6 +44,10 @@ public class CreateSourceEvent {
 	@Nullable
 	public Entity getDirect() {
 		return direct;
+	}
+
+	public void setDirect(@Nullable Entity entity) {
+		direct = entity;
 	}
 
 	@Nullable

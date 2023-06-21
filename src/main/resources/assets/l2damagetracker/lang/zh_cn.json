@@ -1,6 +1,6 @@
 {
   "attribute.name.crit_rate": "暴击率",
   "attribute.name.crit_damage": "暴击伤害",
-  "attribute.name.bow_strength": "弓箭伤害",
+  "attribute.name.bow_strength": "投射物伤害",
   "l2damagetracker.tooltip.tool.immune": "免疫: "
 }

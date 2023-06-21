@@ -54,8 +54,8 @@ public class ExtraArmorConfig {
 	public void onArmorTick(ItemStack stack, Level world, Player player) {
 		String name = ((ArmorItem) stack.getItem()).getMaterial().getName();
 		var config = ArmorEffectConfig.get();
-		if (config == null || !config.immune.containsKey(name)) return;
-		var set = ArmorEffectConfig.get().immune.get(name);
+		if (config == null || !config.isEffectBlocking(name)) return;
+		var set = ArmorEffectConfig.get().getImmunity(name);
 		for (MobEffect e : set) {
 			if (player.hasEffect(e)) {
 				player.removeEffect(e);
@@ -82,8 +82,8 @@ public class ExtraArmorConfig {
 	public void addTooltip(ItemStack stack, List<Component> list) {
 		String name = ((ArmorItem) stack.getItem()).getMaterial().getName();
 		var config = ArmorEffectConfig.get();
-		if (config == null || !config.immune.containsKey(name)) return;
-		var set = ArmorEffectConfig.get().immune.get(name);
+		if (config == null || !config.isEffectBlocking(name)) return;
+		var set = ArmorEffectConfig.get().getImmunity(name);
 		TreeMap<ResourceLocation, MobEffect> map = new TreeMap<>();
 		for (var e : set) {
 			map.put(ForgeRegistries.MOB_EFFECTS.getKey(e), e);
@@ -110,7 +110,7 @@ public class ExtraArmorConfig {
 	public boolean immuneToEffect(ItemStack stack, GenericArmorItem armor, MobEffectInstance effectInstance) {
 		String name = armor.getMaterial().getName();
 		var config = ArmorEffectConfig.get();
-		if (config == null || !config.immune.containsKey(name)) return false;
-		return ArmorEffectConfig.get().immune.get(name).contains(effectInstance.getEffect());
+		if (config == null || !config.isEffectBlocking(name)) return false;
+		return ArmorEffectConfig.get().getImmunity(name).contains(effectInstance.getEffect());
 	}
 }
