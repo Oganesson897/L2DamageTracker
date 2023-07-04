@@ -45,7 +45,7 @@ public class L2DamageTracker {
 
 	public L2DamageTracker() {
 		L2DamageTypes.register();
-		AttackEventHandler.register(0, new GeneralAttackListener());
+		AttackEventHandler.register(1000, new GeneralAttackListener());
 		REGISTRATE.addDataGenerator(ProviderType.LANG, L2DTLangData::genLang);
 	}
 

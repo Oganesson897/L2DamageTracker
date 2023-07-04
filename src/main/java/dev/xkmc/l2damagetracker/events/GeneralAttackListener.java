@@ -9,10 +9,14 @@ import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import dev.xkmc.l2damagetracker.contents.materials.generic.GenericTieredItem;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.eventbus.api.Event;
+
+import java.util.function.BiConsumer;
 
 public class GeneralAttackListener implements AttackListener {
 
@@ -43,12 +47,24 @@ public class GeneralAttackListener implements AttackListener {
 	}
 
 	@Override
+	public void setupProfile(AttackCache cache, BiConsumer<LivingEntity, ItemStack> setup) {
+		if (cache.getLivingAttackEvent() != null) {
+			DamageSource source = cache.getLivingAttackEvent().getSource();
+			if (source.getEntity() instanceof LivingEntity le) {
+				if (source.getDirectEntity() == le) {
+					setup.accept(le, le.getMainHandItem());
+				} else {
+					setup.accept(le, ItemStack.EMPTY);
+				}
+			}
+		}
+	}
+
+	@Override
 	public void onHurt(AttackCache cache, ItemStack weapon) {
 		assert cache.getLivingHurtEvent() != null;
-		if (cache.getLivingHurtEvent().getSource().getDirectEntity() == cache.getAttacker()) {
-			if (weapon.getItem() instanceof GenericTieredItem item) {
-				item.getExtraConfig().onDamage(cache, weapon);
-			}
+		if (weapon.getItem() instanceof GenericTieredItem item) {
+			item.getExtraConfig().onDamage(cache, weapon);
 		}
 	}
 

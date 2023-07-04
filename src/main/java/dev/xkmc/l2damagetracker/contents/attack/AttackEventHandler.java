@@ -4,7 +4,6 @@ import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +28,9 @@ public class AttackEventHandler {
 	private static final Map<Integer, AttackListener> LISTENERS = new TreeMap<>();
 
 	/**
-	 * 0000 - L2Library 		General Attack Listener: crit calculation, create source
+	 * 0000 - L2Complements		Special Damage Creation
+	 * 1000 - L2DamageTracker	General Attack Listener: crit calculation, create source
+	 * 1100 - L2Weaponry		Throwable Source Creation
 	 * 2000 - L2Archery			Arrow source modification
 	 * 3000 - L2Artifacts		Artifact damage boost
 	 * 4000 - L2Weaponry		Primarily post damage
@@ -110,11 +111,6 @@ public class AttackEventHandler {
 			cache = new AttackCache();
 			CACHE.put(id, cache);
 		}
-		DamageSource source = event.getSource();
-		if (source.getEntity() instanceof LivingEntity entity) { // direct damage only
-			ItemStack stack = entity.getMainHandItem();
-			cache.setupAttackerProfile(entity, stack);
-		}
 		if (prev != null)
 			cache.setupPlayer(prev);
 		cache.pushAttackPre(event);
@@ -152,22 +148,13 @@ public class AttackEventHandler {
 			cache.pushHurtPost(event);
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void onDamagePre(LivingDamageEvent event) {
-		if (event.getEntity().level().isClientSide())
-			return;
-		AttackCache cache = CACHE.get(event.getEntity().getUUID());
-		if (cache != null && cache.getStage() == Stage.ACTUALLY_HURT_POST)
-			cache.pushDamagePre(event);
-	}
-
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onDamagePost(LivingDamageEvent event) {
 		if (event.getEntity().level().isClientSide())
 			return;
 		AttackCache cache = CACHE.get(event.getEntity().getUUID());
-		if (cache != null && cache.getStage() == Stage.DAMAGE_PRE)
-			cache.pushDamagePost(event);
+		if (cache != null && cache.getStage() == Stage.ACTUALLY_HURT_POST)
+			cache.pushDamagePre(event);
 	}
 
 	@SubscribeEvent
@@ -185,10 +172,16 @@ public class AttackEventHandler {
 	public static DamageSource onDamageSourceCreate(CreateSourceEvent event) {
 		if (event.getAttacker().level().isClientSide())
 			return null;
+		PlayerAttackCache cache = null;
 		if (PLAYER.containsKey(event.getAttacker().getUUID())) {
-			event.setPlayerAttackCache(PLAYER.get(event.getAttacker().getUUID()));
+			cache = PLAYER.get(event.getAttacker().getUUID());
 		}
+		if (cache != null)
+			event.setPlayerAttackCache(cache);
 		getListeners().forEach(e -> e.onCreateSource(event));
+		if (event.getPlayerAttackCache() != cache) {
+			PLAYER.put(event.getAttacker().getUUID(), event.getPlayerAttackCache());
+		}
 		if (event.getResult() == null) return null;
 		return new DamageSource(event.getRegistry().getHolderOrThrow(event.getResult().type()), event.getDirect(), event.getAttacker());
 	}

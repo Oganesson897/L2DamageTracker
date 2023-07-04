@@ -9,15 +9,11 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 
 import javax.annotation.Nullable;
-import java.util.*;
 
 @SuppressWarnings("unused")
 public class AttackCache {
 
 	int recursive = 0;
-
-	private boolean damageFrozen = true;
-	private boolean damageMaximized = false;
 
 	private Stage stage = Stage.PREINIT;
 	private PlayerAttackCache player;
@@ -31,16 +27,16 @@ public class AttackCache {
 	private ItemStack weapon = ItemStack.EMPTY;
 
 	private float damage_pre;
-	private float damage_modified;
-	private float damage_dealt;
 
-	private final List<DamageModifier> modifierHurt = new ArrayList<>();
-	private final List<DamageModifier> modifierDealt = new ArrayList<>();
+	private final DamageAccumulator hurtDamage = new DamageAccumulator();
+	private final DamageAccumulator dealtDamage = new DamageAccumulator();
 
 	void pushAttackPre(LivingAttackEvent event) {
 		stage = Stage.HURT_PRE;
 		attack = event;
 		target = attack.getEntity();
+		attacker = attack.getSource().getEntity() instanceof LivingEntity le ? le : null;
+		AttackEventHandler.getListeners().forEach(e -> e.setupProfile(this, this::setupAttackerProfile));
 		damage_pre = event.getAmount();
 		AttackEventHandler.getListeners().forEach(e -> e.onAttack(this, weapon));
 	}
@@ -52,16 +48,10 @@ public class AttackCache {
 	void pushHurtPre(LivingHurtEvent event) {
 		stage = Stage.ACTUALLY_HURT_PRE;
 		hurt = event;
-		damageFrozen = false;
-		AttackEventHandler.getListeners().forEach(e -> e.onHurt(this, weapon));
-		damageFrozen = true;
-		damage_modified = event.getAmount();
-		damage_modified = accumulate(damage_modified, modifierHurt);
-		if (damage_modified != event.getAmount()) {
-			event.setAmount(damage_modified);
-		}
-		damageMaximized = true;
-		AttackEventHandler.getListeners().forEach(e -> e.onHurtMaximized(this, weapon));
+		float damage = hurtDamage.run(event.getAmount(),
+				e -> e.onHurt(this, weapon),
+				e -> e.onHurtMaximized(this, weapon));
+		event.setAmount(damage);
 	}
 
 	void pushHurtPost(LivingHurtEvent event) {
@@ -69,26 +59,17 @@ public class AttackCache {
 	}
 
 	void pushDamagePre(LivingDamageEvent event) {
-		stage = Stage.DAMAGE_PRE;
+		stage = Stage.DAMAGE;
 		damage = event;
-		AttackEventHandler.getListeners().forEach(e -> e.onDamage(this, weapon));
-		damage_dealt = event.getAmount();
-		damage_dealt = accumulate(damage_dealt, modifierDealt);
-		if (damage_dealt != event.getAmount()) {
-			event.setAmount(damage_dealt);
-		}
-	}
-
-	void pushDamagePost(LivingDamageEvent event) {
-		stage = Stage.DAMAGE_POST;
-		damage = event;
-		damage_dealt = event.getAmount();
-		AttackEventHandler.getListeners().forEach(e -> e.onDamageFinalized(this, weapon));
+		float damage = dealtDamage.run(event.getAmount(),
+				e -> e.onDamage(this, weapon),
+				e -> e.onDamageFinalized(this, weapon));
+		event.setAmount(damage);
 	}
 
 	void setupAttackerProfile(LivingEntity entity, ItemStack stack) {
-		attacker = entity;
-		weapon = stack;
+		if (attacker == null) attacker = entity;
+		if (weapon.isEmpty()) weapon = stack;
 	}
 
 	public Stage getStage() {
@@ -124,6 +105,7 @@ public class AttackCache {
 		return target;
 	}
 
+	@Nullable
 	public LivingEntity getAttacker() {
 		return attacker;
 	}
@@ -142,52 +124,32 @@ public class AttackCache {
 		return damage_pre;
 	}
 
-	public float getPreDamage() {
-		if (!damageMaximized)
+	public float correctPreDamageOriginal(float actual) {
+		if (stage.ordinal() < Stage.HURT_PRE.ordinal())
 			throw new IllegalStateException("dealt damage not calculated yet");
-		return damage_modified;
+		return damage_pre;
+	}
+
+	public float getPreDamage() {
+		return hurtDamage.getMaximized();
 	}
 
 	public void addHurtModifier(DamageModifier mod) {
-		if (damageFrozen)
-			throw new IllegalStateException("modify hurt damage only on onHurt event.");
-		this.modifierHurt.add(mod);
+		hurtDamage.addHurtModifier(mod);
 	}
 
 	public float getDamageDealt() {
-		if (stage.ordinal() <= Stage.DAMAGE_PRE.ordinal())
-			throw new IllegalStateException("actual damage not calculated yet");
-		return damage_dealt;
+		return dealtDamage.getMaximized();
 	}
 
 	public void addDealtModifier(DamageModifier mod) {
-		if (stage != Stage.DAMAGE_PRE)
-			throw new IllegalStateException("set actual damage only on onDamage event.");
-		this.modifierDealt.add(mod);
+		dealtDamage.addHurtModifier(mod);
 	}
 
 	public void setupPlayer(PlayerAttackCache prev) {
 		player = prev;
 		attacker = prev.getAttacker();
 		if (!prev.getWeapon().isEmpty()) weapon = prev.getWeapon();
-	}
-
-	private static float accumulate(float val, List<DamageModifier> mod) {
-		Map<DamageModifier.Order, Set<DamageModifier>> map = new TreeMap<>();
-		for (var e : mod) {
-			if (!map.containsKey(e.order())) {
-				map.put(e.order(), new TreeSet<>(Comparator.comparing(DamageModifier::priority)));
-			}
-			map.get(e.order()).add(e);
-		}
-		for (var ent : map.entrySet()) {
-			float num = ent.getKey().type.start.start(val);
-			for (var e : ent.getValue()) {
-				num = e.modify(num);
-			}
-			val = ent.getKey().type.end.end(val, num);
-		}
-		return val;
 	}
 
 }
