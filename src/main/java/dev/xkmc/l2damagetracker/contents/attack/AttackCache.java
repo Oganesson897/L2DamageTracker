@@ -67,9 +67,9 @@ public class AttackCache {
 		event.setAmount(damage);
 	}
 
-	void setupAttackerProfile(LivingEntity entity, ItemStack stack) {
-		if (attacker == null) attacker = entity;
-		if (weapon.isEmpty()) weapon = stack;
+	void setupAttackerProfile(@Nullable LivingEntity entity, @Nullable ItemStack stack) {
+		if (attacker == null && entity != null) attacker = entity;
+		if (weapon.isEmpty() && stack != null) weapon = stack;
 	}
 
 	public Stage getStage() {
