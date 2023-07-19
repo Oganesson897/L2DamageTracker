@@ -2,9 +2,7 @@ package dev.xkmc.l2damagetracker.init.data;
 
 import dev.xkmc.l2damagetracker.contents.damage.DamageWrapperTagProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -13,10 +11,8 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.DataPackRegistriesHooks;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -71,8 +67,9 @@ public abstract class DamageTypeAndTagsGen {
 	}
 
 	public void generate(boolean gen, DataGenerator generator) {
-		generator.addProvider(gen, new DamageTypeGen());
-		generator.addProvider(gen, new DamageTypeTagsGen());
+		var entries = new DamageTypeGen();
+		generator.addProvider(gen, entries);
+		generator.addProvider(gen, new DamageTypeTagsGen(entries.getRegistryProvider()));
 	}
 
 	protected void addDamageTypes(BootstapContext<DamageType> ctx) {
@@ -98,24 +95,10 @@ public abstract class DamageTypeAndTagsGen {
 
 	}
 
-	private HolderLookup.Provider constructRegistries(HolderLookup.Provider original, RegistrySetBuilder datapackEntriesBuilder) {
-		var builderKeys = new HashSet<>(datapackEntriesBuilder.getEntryKeys());
-		DataPackRegistriesHooks.getDataPackRegistriesWithDimensions()
-				.filter(data -> !builderKeys.contains(data.key()))
-				.forEach(data -> datapackEntriesBuilder.add(data.key(), context -> {
-				}));
-		return datapackEntriesBuilder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
-	}
-
 	private class DamageTypeTagsGen extends TagsProvider<DamageType> {
 
-		public DamageTypeTagsGen() {
-			super(output, Registries.DAMAGE_TYPE, pvd.thenApply(e -> constructRegistries(e,
-					new RegistrySetBuilder().add(Registries.DAMAGE_TYPE,
-							ctx -> {
-								DamageTypes.bootstrap(ctx);
-								addDamageTypes(ctx);
-							}))), modid, helper);
+		public DamageTypeTagsGen(CompletableFuture<HolderLookup.Provider> pvd) {
+			super(output, Registries.DAMAGE_TYPE, pvd, modid, helper);
 		}
 
 		@Override

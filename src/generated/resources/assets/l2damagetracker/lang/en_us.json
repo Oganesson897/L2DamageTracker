@@ -1,5 +1,5 @@
 {
-  "attribute.name.bow_strength": "Bow Strength",
+  "attribute.name.bow_strength": "Projectile Strength",
   "attribute.name.crit_damage": "Crit Damage",
   "attribute.name.crit_rate": "Crit Rate",
   "l2damagetracker.tooltip.tool.immune": "Immune to: "
