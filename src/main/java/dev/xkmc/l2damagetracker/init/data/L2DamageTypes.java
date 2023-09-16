@@ -1,10 +1,15 @@
 package dev.xkmc.l2damagetracker.init.data;
 
+import com.hollingsworth.arsnouveau.ArsNouveau;
+import com.hollingsworth.arsnouveau.setup.registry.DamageTypesRegistry;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeWrapper;
 import dev.xkmc.l2damagetracker.contents.damage.DamageWrapperTagProvider;
 import dev.xkmc.l2damagetracker.contents.damage.DefaultDamageState;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
+import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -15,6 +20,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +85,30 @@ public class L2DamageTypes extends DamageTypeAndTagsGen {
 			wrapper.gen(pvd, lookup);
 		}
 		pvd.tag(MATERIAL_MUX).add(DamageTypes.PLAYER_ATTACK, DamageTypes.MOB_ATTACK);
-		pvd.tag(MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC, DamageTypes.THORNS, DamageTypes.SONIC_BOOM);
+		pvd.tag(MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC, DamageTypes.THORNS, DamageTypes.SONIC_BOOM,
+				DamageTypes.WITHER, DamageTypes.DRAGON_BREATH, DamageTypes.WITHER_SKULL);
+		if (ModList.get().isLoaded(IronsSpellbooks.MODID)) {
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.FIRE_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.ICE_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.LIGHTNING_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.HOLY_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.ENDER_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.BLOOD_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.EVOCATION_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.VOID_MAGIC.location());
+			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.POISON_MAGIC.location());
+			pvd.tag(MAGIC).addOptional(ISSDamageTypes.CAULDRON.location());
+			pvd.tag(MAGIC).addOptional(ISSDamageTypes.HEARTSTOP.location());
+			pvd.tag(MAGIC).addOptional(ISSDamageTypes.DRAGON_BREATH_POOL.location());
+			pvd.tag(MAGIC).addOptional(ISSDamageTypes.FIRE_FIELD.location());
+			pvd.tag(MAGIC).addOptional(ISSDamageTypes.POISON_CLOUD.location());
+		}
+		if (ModList.get().isLoaded(ArsNouveau.MODID)) {
+			pvd.tag(MAGIC).addOptional(DamageTypesRegistry.CRUSH.location());
+			pvd.tag(MAGIC).addOptional(DamageTypesRegistry.WINDSHEAR.location());
+			pvd.tag(MAGIC).addOptional(DamageTypesRegistry.FLARE.location());
+			pvd.tag(MAGIC).addOptional(DamageTypesRegistry.COLD_SNAP.location());
+		}
 	}
 
 }
