@@ -86,6 +86,10 @@ mixin {
     config "${modid}.mixins.json"
 }
 
+java {
+    withSourcesJar()
+}
+
 repositories {
     flatDir {
         dirs 'libs'

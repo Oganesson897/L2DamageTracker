@@ -1,6 +1,9 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class DamageAccumulator {
@@ -23,16 +26,19 @@ public class DamageAccumulator {
 	}
 
 	private float accumulate(float val) {
-		Map<DamageModifier.Order, Set<DamageModifier>> map = new TreeMap<>();
+		Map<DamageModifier.Order, TreeMap<Integer, DamageModifier>> map = new TreeMap<>();
 		for (var e : modifiers) {
 			if (!map.containsKey(e.order())) {
-				map.put(e.order(), new TreeSet<>(Comparator.comparing(DamageModifier::priority)));
+				map.put(e.order(), new TreeMap<>());
 			}
-			map.get(e.order()).add(e);
+			var sub = map.get(e.order());
+			int i = e.priority();
+			while (sub.containsKey(i)) i++;
+			sub.put(i, e);
 		}
 		for (var ent : map.entrySet()) {
 			float num = ent.getKey().type.start.start(val);
-			for (var e : ent.getValue()) {
+			for (var e : ent.getValue().values()) {
 				num = e.modify(num);
 			}
 			val = ent.getKey().type.end.end(val, num);

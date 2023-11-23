@@ -10,6 +10,7 @@ import dev.xkmc.l2damagetracker.contents.materials.generic.GenericArmorItem;
 import dev.xkmc.l2library.base.L2Registrate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -53,10 +54,10 @@ public record GenItemVanillaType(String modid, L2Registrate registrate) {
 					registrate.item(id + "_" + str, p -> mat.getArmorConfig().sup().get(mat, slot, p))
 							.model((ctx, pvd) -> generatedModel(ctx, pvd, id, str))
 							.defaultLang();
-			ans[i][3] = armor_gen.apply("helmet", ArmorItem.Type.HELMET).tag(Tags.Items.ARMORS_HELMETS).register();
-			ans[i][2] = armor_gen.apply("chestplate", ArmorItem.Type.CHESTPLATE).tag(Tags.Items.ARMORS_CHESTPLATES).register();
-			ans[i][1] = armor_gen.apply("leggings", ArmorItem.Type.LEGGINGS).tag(Tags.Items.ARMORS_LEGGINGS).register();
-			ans[i][0] = armor_gen.apply("boots", ArmorItem.Type.BOOTS).tag(Tags.Items.ARMORS_BOOTS).register();
+			ans[i][3] = armor_gen.apply("helmet", ArmorItem.Type.HELMET).tag(Tags.Items.ARMORS_HELMETS, ItemTags.TRIMMABLE_ARMOR).register();
+			ans[i][2] = armor_gen.apply("chestplate", ArmorItem.Type.CHESTPLATE).tag(Tags.Items.ARMORS_CHESTPLATES, ItemTags.TRIMMABLE_ARMOR).register();
+			ans[i][1] = armor_gen.apply("leggings", ArmorItem.Type.LEGGINGS).tag(Tags.Items.ARMORS_LEGGINGS, ItemTags.TRIMMABLE_ARMOR).register();
+			ans[i][0] = armor_gen.apply("boots", ArmorItem.Type.BOOTS).tag(Tags.Items.ARMORS_BOOTS, ItemTags.TRIMMABLE_ARMOR).register();
 			BiFunction<String, Tools, ItemEntry> tool_gen = (str, tool) ->
 					registrate.item(id + "_" + str, p -> mat.getToolConfig().sup().get(mat, tool, p))
 							.model((ctx, pvd) -> handHeld(ctx, pvd, id, str)).tag(tool.tag)
