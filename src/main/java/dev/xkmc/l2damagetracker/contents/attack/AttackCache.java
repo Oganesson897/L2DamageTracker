@@ -43,6 +43,7 @@ public class AttackCache {
 
 	void pushAttackPost(LivingAttackEvent event) {
 		stage = Stage.HURT_POST;
+		AttackEventHandler.getListeners().forEach(e -> e.postAttack(this, event, weapon));
 	}
 
 	void pushHurtPre(LivingHurtEvent event) {
@@ -56,6 +57,7 @@ public class AttackCache {
 
 	void pushHurtPost(LivingHurtEvent event) {
 		stage = Stage.ACTUALLY_HURT_POST;
+		AttackEventHandler.getListeners().forEach(e -> e.postHurt(this, event, weapon));
 	}
 
 	void pushDamagePre(LivingDamageEvent event) {

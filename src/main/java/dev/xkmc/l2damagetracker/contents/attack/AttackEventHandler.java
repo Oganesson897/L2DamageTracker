@@ -116,7 +116,7 @@ public class AttackEventHandler {
 		cache.pushAttackPre(event);
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public static void onAttackPost(LivingAttackEvent event) {
 		if (event.getEntity().level().isClientSide())
 			return;
@@ -139,7 +139,7 @@ public class AttackEventHandler {
 			cache.pushHurtPre(event);
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	public static void onActuallyHurtPost(LivingHurtEvent event) {
 		if (event.getEntity().level().isClientSide())
 			return;
