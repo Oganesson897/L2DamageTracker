@@ -4,6 +4,7 @@ import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -96,9 +98,14 @@ public class AttackEventHandler {
 		}
 		UUID id = event.getEntity().getUUID();
 		AttackCache cache = CACHE.get(id);
-		if (cache != null && cache.getStage() == Stage.HURT_PRE) {
-			cache.recursive++;
-			return;
+		if (cache != null) {
+			if (cache.getStage() == Stage.ACTUALLY_HURT_PRE || cache.getStage() == Stage.HURT_PRE) {
+				cache.recursive++;
+				L2Library.LOGGER.error("Cyclic Damage Event Detected");
+				L2Library.LOGGER.throwing(Level.DEBUG, new IllegalStateException("Cyclic Damage Event Detected"));
+				event.setCanceled(true);
+				return;
+			}
 		}
 		boolean replace = cache == null;
 		PlayerAttackCache prev = null;
@@ -121,10 +128,12 @@ public class AttackEventHandler {
 		if (event.getEntity().level().isClientSide())
 			return;
 		AttackCache cache = CACHE.get(event.getEntity().getUUID());
-		if (cache != null && cache.getStage() == Stage.HURT_PRE) {
-			if (cache.recursive > 0) {
-				cache.recursive--;
-				return;
+		if (cache != null) {
+			if (cache.getStage() == Stage.ACTUALLY_HURT_PRE || cache.getStage() == Stage.HURT_PRE) {
+				if (cache.recursive > 0) {
+					cache.recursive--;
+					return;
+				}
 			}
 			cache.pushAttackPost(event);
 		}
