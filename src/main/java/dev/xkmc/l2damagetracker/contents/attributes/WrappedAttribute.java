@@ -7,9 +7,9 @@ public class WrappedAttribute extends RangedAttribute {
 
 	private final double intrinsicBase;
 
-	public WrappedAttribute(String name, double def, double min, double max) {
-		super(name, 0, min - def, max - def);
-		intrinsicBase = def;
+	public WrappedAttribute(String name, double ins, double def, double min, double max) {
+		super(name, def, min - ins, max - ins);
+		intrinsicBase = ins;
 	}
 
 	public double getIntrinsic() {

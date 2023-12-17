@@ -18,12 +18,12 @@ public class DTAttributeConfigGen extends ConfigDataProvider {
 		collector.add(L2Tabs.ATTRIBUTE_ENTRY,
 				new ResourceLocation(L2DamageTracker.MODID, "l2extra"),
 				new AttributeDisplayConfig()
-						.add(L2DamageTracker.CRIT_RATE.get(), true, 11000, L2DamageTracker.CRIT_RATE.get().getIntrinsic())
-						.add(L2DamageTracker.CRIT_DMG.get(), true, 12000, L2DamageTracker.CRIT_DMG.get().getIntrinsic())
-						.add(L2DamageTracker.BOW_STRENGTH.get(), true, 13000, L2DamageTracker.BOW_STRENGTH.get().getIntrinsic())
-						.add(L2DamageTracker.EXPLOSION_FACTOR.get(), true, 16000, L2DamageTracker.EXPLOSION_FACTOR.get().getIntrinsic())
-						.add(L2DamageTracker.FIRE_FACTOR.get(), true, 17000, L2DamageTracker.FIRE_FACTOR.get().getIntrinsic())
-						.add(L2DamageTracker.MAGIC_FACTOR.get(), true, 18000, L2DamageTracker.MAGIC_FACTOR.get().getIntrinsic())
+						.add(L2DamageTracker.CRIT_RATE.get(), true, 11000, 0)
+						.add(L2DamageTracker.CRIT_DMG.get(), true, 12000, 0)
+						.add(L2DamageTracker.BOW_STRENGTH.get(), true, 13000, 0)
+						.add(L2DamageTracker.EXPLOSION_FACTOR.get(), true, 16000, 0)
+						.add(L2DamageTracker.FIRE_FACTOR.get(), true, 17000, 0)
+						.add(L2DamageTracker.MAGIC_FACTOR.get(), true, 18000, 0)
 		);
 	}
 }

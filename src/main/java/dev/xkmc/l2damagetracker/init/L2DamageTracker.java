@@ -92,7 +92,7 @@ public class L2DamageTracker {
 	private static RegistryEntry<WrappedAttribute> regWrapped(String id, double def, double max, String name) {
 		REGISTRATE.addRawLang("attribute.name." + id, name);
 		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
-				() -> new WrappedAttribute("attribute.name." + id, def, 0, max)
+				() -> new WrappedAttribute("attribute.name." + id, 0, def, 0, max)
 						.setSyncable(true));
 	}
 
