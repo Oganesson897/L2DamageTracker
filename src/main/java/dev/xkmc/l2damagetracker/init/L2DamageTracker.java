@@ -37,12 +37,12 @@ public class L2DamageTracker {
 
 	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1);
 
-	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped("crit_rate", 0, 1, "Weapon Crit Rate");
-	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped("crit_damage", 0.5, 1000, "Weapon Crit Damage");
-	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 1, 1000, "Projectile Strength");
-	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 1000, "Explosion Damage");
-	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 1, 1000, "Fire Damage");
-	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 1, 1000, "Magic Damage");
+	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped("crit_rate", 0, 0, 1, "Weapon Crit Rate");
+	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped("crit_damage", 0, 0.5, 1000, "Weapon Crit Damage");
+	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 1, 0, 1000, "Projectile Strength");
+	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 0, 1000, "Explosion Damage");
+	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 1, 0, 1000, "Fire Damage");
+	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 1, 0, 1000, "Magic Damage");
 
 	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
 			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
@@ -89,10 +89,10 @@ public class L2DamageTracker {
 						.setSyncable(true));
 	}
 
-	private static RegistryEntry<WrappedAttribute> regWrapped(String id, double def, double max, String name) {
+	private static RegistryEntry<WrappedAttribute> regWrapped(String id, double ins, double def, double max, String name) {
 		REGISTRATE.addRawLang("attribute.name." + id, name);
 		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
-				() -> new WrappedAttribute("attribute.name." + id, 0, def, 0, max)
+				() -> new WrappedAttribute("attribute.name." + id, ins, def, 0, max)
 						.setSyncable(true));
 	}
 
