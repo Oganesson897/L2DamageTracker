@@ -2,5 +2,8 @@
   "attribute.name.crit_rate": "暴击率",
   "attribute.name.crit_damage": "暴击伤害",
   "attribute.name.bow_strength": "投射物伤害",
-  "l2damagetracker.tooltip.tool.immune": "免疫: "
+  "l2damagetracker.tooltip.tool.immune": "免疫: ",
+  "attribute.name.explosion_damage": "爆炸伤害",
+  "attribute.name.fire_damage": "火焰伤害",
+  "attribute.name.magic_damage": "魔法伤害"
 }

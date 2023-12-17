@@ -4,7 +4,6 @@ import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -76,9 +75,9 @@ public class AttackEventHandler {
 	public static void onEntityJoin(EntityJoinLevelEvent event) {
 		if (event.getEntity() instanceof AbstractArrow arrow) {
 			if (arrow.getOwner() instanceof Player player) {
-				double cr = player.getAttributeValue(L2DamageTracker.CRIT_RATE.get());
-				double cd = player.getAttributeValue(L2DamageTracker.CRIT_DMG.get());
-				double strength = player.getAttributeValue(L2DamageTracker.BOW_STRENGTH.get());
+				double cr = L2DamageTracker.CRIT_RATE.get().getWrappedValue(player);
+				double cd = L2DamageTracker.CRIT_DMG.get().getWrappedValue(player);
+				double strength = L2DamageTracker.BOW_STRENGTH.get().getWrappedValue(player);
 				if (arrow.isCritArrow() && player.getRandom().nextDouble() < cr) {
 					strength *= (1 + cd);
 				}

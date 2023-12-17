@@ -3,6 +3,7 @@ package dev.xkmc.l2damagetracker.init;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
+import dev.xkmc.l2damagetracker.contents.attributes.WrappedAttribute;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
 import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
@@ -36,9 +37,12 @@ public class L2DamageTracker {
 
 	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1);
 
-	public static final RegistryEntry<Attribute> CRIT_RATE = REGISTRATE.simple("crit_rate", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.crit_rate", 0, 0, 1).setSyncable(true));
-	public static final RegistryEntry<Attribute> CRIT_DMG = REGISTRATE.simple("crit_damage", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.crit_damage", 0.5, 0, 1000).setSyncable(true));
-	public static final RegistryEntry<Attribute> BOW_STRENGTH = REGISTRATE.simple("bow_strength", ForgeRegistries.ATTRIBUTES.getRegistryKey(), () -> new RangedAttribute("attribute.name.bow_strength", 1, 0, 1000).setSyncable(true));
+	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped("crit_rate", 0, 1, "Weapon Crit Rate");
+	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped("crit_damage", 0.5, 1000, "Weapon Crit Damage");
+	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 1, 1000, "Projectile Strength");
+	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 1000, "Explosion Damage");
+	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 1, 1000, "Fire Damage");
+	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 1, 1000, "Magic Damage");
 
 	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
 			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
@@ -53,7 +57,12 @@ public class L2DamageTracker {
 	public static void modifyAttributes(EntityAttributeModificationEvent event) {
 		event.add(EntityType.PLAYER, CRIT_RATE.get());
 		event.add(EntityType.PLAYER, CRIT_DMG.get());
-		event.add(EntityType.PLAYER, BOW_STRENGTH.get());
+		for (var e : event.getTypes()) {
+			event.add(e, BOW_STRENGTH.get());
+			event.add(e, EXPLOSION_FACTOR.get());
+			event.add(e, FIRE_FACTOR.get());
+			event.add(e, MAGIC_FACTOR.get());
+		}
 	}
 
 	@SubscribeEvent
@@ -71,6 +80,20 @@ public class L2DamageTracker {
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
 		DamageTypeRoot.generateAll();
+	}
+
+	private static RegistryEntry<Attribute> reg(String id, double def, double max, String name) {
+		REGISTRATE.addRawLang("attribute.name." + id, name);
+		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
+				() -> new RangedAttribute("attribute.name." + id, def, 0, max)
+						.setSyncable(true));
+	}
+
+	private static RegistryEntry<WrappedAttribute> regWrapped(String id, double def, double max, String name) {
+		REGISTRATE.addRawLang("attribute.name." + id, name);
+		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
+				() -> new WrappedAttribute("attribute.name." + id, def, 0, max)
+						.setSyncable(true));
 	}
 
 }

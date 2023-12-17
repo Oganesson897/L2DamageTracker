@@ -1,14 +1,12 @@
 package dev.xkmc.l2damagetracker.events;
 
-import dev.xkmc.l2damagetracker.contents.attack.AttackCache;
-import dev.xkmc.l2damagetracker.contents.attack.AttackListener;
-import dev.xkmc.l2damagetracker.contents.attack.CreateSourceEvent;
-import dev.xkmc.l2damagetracker.contents.attack.PlayerAttackCache;
+import dev.xkmc.l2damagetracker.contents.attack.*;
 import dev.xkmc.l2damagetracker.contents.damage.DefaultDamageState;
 import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import dev.xkmc.l2damagetracker.contents.materials.generic.GenericTieredItem;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,12 +21,12 @@ public class GeneralAttackListener implements AttackListener {
 	@Override
 	public boolean onCriticalHit(PlayerAttackCache cache, CriticalHitEvent event) {
 		Player player = event.getEntity();
-		double cr = player.getAttributeValue(L2DamageTracker.CRIT_RATE.get());
-		double cd = player.getAttributeValue(L2DamageTracker.CRIT_DMG.get());
+		double cr = L2DamageTracker.CRIT_RATE.get().getWrappedValue(player);
+		double cd = L2DamageTracker.CRIT_DMG.get().getWrappedValue(player);
 		if (event.isVanillaCritical()) {
-			event.setDamageModifier((float) (event.getDamageModifier() + cd - 0.5));
+			event.setDamageModifier(event.getDamageModifier() / 1.5f * (float) (1 + cd));
 		} else if (player.getRandom().nextDouble() < cr) {
-			event.setDamageModifier((float) (event.getDamageModifier() + cd - 0.5));
+			event.setDamageModifier(event.getDamageModifier() * (float) (1 + cd));
 			event.setResult(Event.Result.ALLOW);
 			return true;
 		}
@@ -62,9 +60,22 @@ public class GeneralAttackListener implements AttackListener {
 
 	@Override
 	public void onHurt(AttackCache cache, ItemStack weapon) {
-		assert cache.getLivingHurtEvent() != null;
+		var event = cache.getLivingHurtEvent();
+		assert event != null;
 		if (weapon.getItem() instanceof GenericTieredItem item) {
 			item.getExtraConfig().onDamage(cache, weapon);
+		}
+		var attacker = cache.getAttacker();
+		if (attacker != null) {
+			if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)) {
+				cache.addHurtModifier(DamageModifier.multTotal((float) L2DamageTracker.EXPLOSION_FACTOR.get().getWrappedValue(attacker)));
+			}
+			if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
+				cache.addHurtModifier(DamageModifier.multTotal((float) L2DamageTracker.FIRE_FACTOR.get().getWrappedValue(attacker)));
+			}
+			if (event.getSource().is(L2DamageTypes.MAGIC)) {
+				cache.addHurtModifier(DamageModifier.multTotal((float) L2DamageTracker.MAGIC_FACTOR.get().getWrappedValue(attacker)));
+			}
 		}
 	}
 
