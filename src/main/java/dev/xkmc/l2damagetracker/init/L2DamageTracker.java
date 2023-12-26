@@ -1,10 +1,12 @@
 package dev.xkmc.l2damagetracker.init;
 
+import com.hollingsworth.arsnouveau.ArsNouveau;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
 import dev.xkmc.l2damagetracker.contents.attributes.WrappedAttribute;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
+import dev.xkmc.l2damagetracker.events.ArsEventCompat;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
 import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
 import dev.xkmc.l2damagetracker.init.data.DTAttributeConfigGen;
@@ -19,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,6 +54,9 @@ public class L2DamageTracker {
 		L2DamageTypes.register();
 		AttackEventHandler.register(1000, new GeneralAttackListener());
 		REGISTRATE.addDataGenerator(ProviderType.LANG, L2DTLangData::genLang);
+		if (ModList.get().isLoaded(ArsNouveau.MODID)) {
+			MinecraftForge.EVENT_BUS.register(ArsEventCompat.class);
+		}
 	}
 
 	@SubscribeEvent
