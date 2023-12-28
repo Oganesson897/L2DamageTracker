@@ -6,9 +6,11 @@ import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 public class WrappedAttribute extends RangedAttribute {
 
 	private final double intrinsicBase;
+	private final double defaultValue;
 
 	public WrappedAttribute(String name, double ins, double def, double min, double max) {
 		super(name, def, min - ins, max - ins);
+		defaultValue = def;
 		intrinsicBase = ins;
 	}
 
@@ -19,6 +21,9 @@ public class WrappedAttribute extends RangedAttribute {
 	public double getWrappedValue(LivingEntity le) {
 		var ins = le.getAttribute(this);
 		if (ins == null) return getMinValue() + getIntrinsic();
+		if (ins.getBaseValue() != defaultValue) {
+			ins.setBaseValue(defaultValue);
+		}
 		return ins.getValue() + getIntrinsic();
 	}
 
