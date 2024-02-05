@@ -1,5 +1,6 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
+import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -31,6 +32,10 @@ public class AttackCache {
 	private final DamageAccumulator hurtDamage = new DamageAccumulator();
 	private final DamageAccumulator dealtDamage = new DamageAccumulator();
 
+	private void log(String stage, float amount) {
+		L2Library.LOGGER.info("Damage Tracker: stage=ATTACK, damage=" + amount + ", target=" + getAttackTarget() + ", owner=" + getAttacker());//TODO
+	}
+
 	void pushAttackPre(LivingAttackEvent event) {
 		stage = Stage.HURT_PRE;
 		attack = event;
@@ -44,28 +49,34 @@ public class AttackCache {
 	void pushAttackPost(LivingAttackEvent event) {
 		stage = Stage.HURT_POST;
 		AttackEventHandler.getListeners().forEach(e -> e.postAttack(this, event, weapon));
+		log("ATTACK", event.getAmount());
 	}
 
 	void pushHurtPre(LivingHurtEvent event) {
 		stage = Stage.ACTUALLY_HURT_PRE;
 		hurt = event;
+		log("HURT-pre", event.getAmount());
 		float damage = hurtDamage.run(event.getAmount(),
 				e -> e.onHurt(this, weapon),
 				e -> e.onHurtMaximized(this, weapon));
+		log("HURT-L2", damage);
 		event.setAmount(damage);
 	}
 
 	void pushHurtPost(LivingHurtEvent event) {
 		stage = Stage.ACTUALLY_HURT_POST;
 		AttackEventHandler.getListeners().forEach(e -> e.postHurt(this, event, weapon));
+		log("HURT-post", event.getAmount());
 	}
 
 	void pushDamagePre(LivingDamageEvent event) {
 		stage = Stage.DAMAGE;
 		damage = event;
+		log("DAMAGE-pre", event.getAmount());
 		float damage = dealtDamage.run(event.getAmount(),
 				e -> e.onDamage(this, weapon),
 				e -> e.onDamageFinalized(this, weapon));
+		log("DAMAGE-L2", damage);
 		event.setAmount(damage);
 	}
 
