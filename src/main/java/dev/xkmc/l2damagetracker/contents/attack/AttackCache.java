@@ -1,5 +1,6 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
+import dev.xkmc.l2damagetracker.init.data.L2DamageTrackerConfig;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +34,8 @@ public class AttackCache {
 	private final DamageAccumulator dealtDamage = new DamageAccumulator();
 
 	private void log(String stage, float amount) {
-		L2Library.LOGGER.info("Damage Tracker: stage=ATTACK, damage=" + amount + ", target=" + getAttackTarget() + ", owner=" + getAttacker());//TODO
+		if (!L2DamageTrackerConfig.COMMON.printDamageTrace.get()) return;
+		L2Library.LOGGER.info("Damage Tracker: stage=ATTACK, damage=" + amount + ", target=" + getAttackTarget() + ", owner=" + getAttacker());
 	}
 
 	void pushAttackPre(LivingAttackEvent event) {
@@ -76,7 +78,7 @@ public class AttackCache {
 		float damage = dealtDamage.run(event.getAmount(),
 				e -> e.onDamage(this, weapon),
 				e -> e.onDamageFinalized(this, weapon));
-		log("DAMAGE-L2", damage);
+		log("DAMAGE-final", damage);
 		event.setAmount(damage);
 	}
 

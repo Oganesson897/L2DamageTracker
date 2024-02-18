@@ -1,6 +1,7 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
+import dev.xkmc.l2damagetracker.init.data.L2DamageTrackerConfig;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -100,9 +101,12 @@ public class AttackEventHandler {
 		if (cache != null) {
 			if (cache.getStage() == Stage.ACTUALLY_HURT_PRE || cache.getStage() == Stage.HURT_PRE) {
 				cache.recursive++;
-				L2Library.LOGGER.error("Cyclic Damage Event Detected");
-				L2Library.LOGGER.throwing(Level.DEBUG, new IllegalStateException("Cyclic Damage Event Detected"));
-				event.setCanceled(true);
+				if (L2DamageTrackerConfig.COMMON.enableCyclicDamageEventInterrupt.get() &&
+						cache.recursive >= L2DamageTrackerConfig.COMMON.cyclicDamageThreshold.get()) {
+					L2Library.LOGGER.error("Cyclic Damage Event Detected");
+					L2Library.LOGGER.throwing(Level.ERROR, new IllegalStateException("Cyclic Damage Event Detected"));
+					event.setCanceled(true);
+				}
 				return;
 			}
 		}

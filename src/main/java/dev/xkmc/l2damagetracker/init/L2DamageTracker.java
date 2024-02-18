@@ -8,10 +8,7 @@ import dev.xkmc.l2damagetracker.contents.attributes.WrappedAttribute;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.ArsEventCompat;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
-import dev.xkmc.l2damagetracker.init.data.ArmorEffectConfig;
-import dev.xkmc.l2damagetracker.init.data.DTAttributeConfigGen;
-import dev.xkmc.l2damagetracker.init.data.L2DTLangData;
-import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
+import dev.xkmc.l2damagetracker.init.data.*;
 import dev.xkmc.l2library.base.L2Registrate;
 import dev.xkmc.l2library.serial.config.ConfigTypeEntry;
 import dev.xkmc.l2library.serial.config.PacketHandlerWithConfig;
@@ -42,15 +39,16 @@ public class L2DamageTracker {
 
 	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped("crit_rate", 0, 0, 1, "Weapon Crit Rate");
 	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped("crit_damage", 0, 0.5, 1000, "Weapon Crit Damage");
-	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 1, 0, 1000, "Projectile Strength");
+	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 0, 1, 1000, "Projectile Strength");
 	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 0, 1000, "Explosion Damage");
-	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 1, 0, 1000, "Fire Damage");
-	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 1, 0, 1000, "Magic Damage");
+	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 0, 1, 1000, "Fire Damage");
+	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 0, 1, 1000, "Magic Damage");
 
 	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
 			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
 
 	public L2DamageTracker() {
+		L2DamageTrackerConfig.init();
 		L2DamageTypes.register();
 		AttackEventHandler.register(1000, new GeneralAttackListener());
 		REGISTRATE.addDataGenerator(ProviderType.LANG, L2DTLangData::genLang);

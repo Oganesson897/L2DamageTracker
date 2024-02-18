@@ -17,7 +17,22 @@ public class L2DamageTrackerConfig {
 
 	public static class Common {
 
+		public final ForgeConfigSpec.BooleanValue enableCyclicDamageEventInterrupt;
+		public final ForgeConfigSpec.IntValue cyclicDamageThreshold;
+		public final ForgeConfigSpec.BooleanValue muteCyclicDamageInterrupt;
+		public final ForgeConfigSpec.BooleanValue printDamageTrace;
+
 		Common(ForgeConfigSpec.Builder builder) {
+			enableCyclicDamageEventInterrupt = builder
+					.comment("Allows L2DamageTracker to detect and prevent cyclic damage events")
+					.define("enableCyclicDamageEventInterrupt", false);
+			cyclicDamageThreshold = builder
+					.comment("Cyclic Damage Interruption threshold")
+					.defineInRange("cyclicDamageThreshold", 1, 1, 1000);
+			muteCyclicDamageInterrupt = builder.comment("Mute error log lines for cyclic damage")
+					.define("muteCyclicDamageInterrupt", false);
+			printDamageTrace = builder.comment("Print damage trace tracked by damage tracker")
+					.define("printDamageTrace", false);
 
 		}
 

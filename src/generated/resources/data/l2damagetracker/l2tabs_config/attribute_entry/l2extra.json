@@ -14,7 +14,7 @@
     },
     {
       "id": "l2damagetracker:bow_strength",
-      "intrinsic": 1.0,
+      "intrinsic": 0.0,
       "order": 13000,
       "usePercent": true
     },
@@ -26,13 +26,13 @@
     },
     {
       "id": "l2damagetracker:fire_damage",
-      "intrinsic": 1.0,
+      "intrinsic": 0.0,
       "order": 17000,
       "usePercent": true
     },
     {
       "id": "l2damagetracker:magic_damage",
-      "intrinsic": 1.0,
+      "intrinsic": 0.0,
       "order": 18000,
       "usePercent": true
     }
