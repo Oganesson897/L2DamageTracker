@@ -24,6 +24,8 @@ public class DTAttributeConfigGen extends ConfigDataProvider {
 						.add(L2DamageTracker.EXPLOSION_FACTOR.get(), true, 16000, L2DamageTracker.EXPLOSION_FACTOR.get().getIntrinsic())
 						.add(L2DamageTracker.FIRE_FACTOR.get(), true, 17000, L2DamageTracker.FIRE_FACTOR.get().getIntrinsic())
 						.add(L2DamageTracker.MAGIC_FACTOR.get(), true, 18000, L2DamageTracker.MAGIC_FACTOR.get().getIntrinsic())
+						.add(L2DamageTracker.REDUCTION.get(), true, 23000, 0)
+						.add(L2DamageTracker.ABSORB.get(), 24000)
 		);
 	}
 }

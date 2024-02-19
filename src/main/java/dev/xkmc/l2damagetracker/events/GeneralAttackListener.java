@@ -6,6 +6,7 @@ import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import dev.xkmc.l2damagetracker.contents.materials.generic.GenericTieredItem;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
+import dev.xkmc.l2library.capability.conditionals.ConditionalData;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -78,5 +79,26 @@ public class GeneralAttackListener implements AttackListener {
 			}
 		}
 	}
+
+
+	@Override
+	public void onDamage(AttackCache cache, ItemStack weapon) {
+		var event = cache.getLivingDamageEvent();
+		assert event != null;
+		if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+			var ins = cache.getAttackTarget().getAttribute(L2DamageTracker.REDUCTION.get());
+			if (ins != null) {
+				float val = (float) ins.getValue();
+				cache.addDealtModifier(DamageModifier.multAttr(val));
+			}
+			ins = cache.getAttackTarget().getAttribute(L2DamageTracker.ABSORB.get());
+			if (ins != null) {
+				float val = (float) ins.getValue();
+				cache.addDealtModifier(DamageModifier.add(-val));
+				cache.addDealtModifier(DamageModifier.nonlinearMiddle(943, e -> Math.max(0, e)));
+			}
+		}
+	}
+
 
 }

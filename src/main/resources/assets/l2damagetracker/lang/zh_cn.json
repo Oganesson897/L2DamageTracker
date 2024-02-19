@@ -5,5 +5,7 @@
   "l2damagetracker.tooltip.tool.immune": "免疫: ",
   "attribute.name.explosion_damage": "爆炸伤害",
   "attribute.name.fire_damage": "火焰伤害",
-  "attribute.name.magic_damage": "魔法伤害"
+  "attribute.name.magic_damage": "魔法伤害",
+  "attribute.name.damage_absorption": "伤害吸收",
+  "attribute.name.damage_reduction": "受到的伤害"
 }

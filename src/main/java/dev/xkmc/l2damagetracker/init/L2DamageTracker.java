@@ -43,6 +43,8 @@ public class L2DamageTracker {
 	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 0, 1000, "Explosion Damage");
 	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 0, 1, 1000, "Fire Damage");
 	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 0, 1, 1000, "Magic Damage");
+	public static final RegistryEntry<Attribute> ABSORB = reg("damage_absorption", 0, 10000, "Damage Absorption");
+	public static final RegistryEntry<Attribute> REDUCTION = reg("damage_reduction", 1, 10000, "Damage after Reduction");
 
 	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
 			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
@@ -66,6 +68,8 @@ public class L2DamageTracker {
 			event.add(e, EXPLOSION_FACTOR.get());
 			event.add(e, FIRE_FACTOR.get());
 			event.add(e, MAGIC_FACTOR.get());
+			event.add(e, REDUCTION.get());
+			event.add(e, ABSORB.get());
 		}
 	}
 

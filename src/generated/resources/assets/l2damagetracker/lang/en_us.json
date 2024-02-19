@@ -2,6 +2,8 @@
   "attribute.name.bow_strength": "Projectile Strength",
   "attribute.name.crit_damage": "Weapon Crit Damage",
   "attribute.name.crit_rate": "Weapon Crit Rate",
+  "attribute.name.damage_absorption": "Damage Absorption",
+  "attribute.name.damage_reduction": "Damage after Reduction",
   "attribute.name.explosion_damage": "Explosion Damage",
   "attribute.name.fire_damage": "Fire Damage",
   "attribute.name.magic_damage": "Magic Damage",
