@@ -21,6 +21,8 @@ public class L2DamageTrackerConfig {
 		public final ForgeConfigSpec.IntValue cyclicDamageThreshold;
 		public final ForgeConfigSpec.BooleanValue muteCyclicDamageInterrupt;
 		public final ForgeConfigSpec.BooleanValue printDamageTrace;
+		public final ForgeConfigSpec.BooleanValue savePlayerAttack;
+		public final ForgeConfigSpec.BooleanValue savePlayerHurt;
 
 		Common(ForgeConfigSpec.Builder builder) {
 			enableCyclicDamageEventInterrupt = builder
@@ -33,6 +35,11 @@ public class L2DamageTrackerConfig {
 					.define("muteCyclicDamageInterrupt", false);
 			printDamageTrace = builder.comment("Print damage trace tracked by damage tracker")
 					.define("printDamageTrace", false);
+			savePlayerAttack = builder.comment("Save player attack damage trace")
+					.define("savePlayerAttack", false);
+			savePlayerHurt = builder.comment("Save player hurt damage trace")
+					.define("savePlayerDamaged", false);
+
 
 		}
 

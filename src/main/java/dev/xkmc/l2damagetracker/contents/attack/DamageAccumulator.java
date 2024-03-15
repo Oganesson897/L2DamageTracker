@@ -1,5 +1,7 @@
 package dev.xkmc.l2damagetracker.contents.attack;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +17,17 @@ public class DamageAccumulator {
 
 	private final List<DamageModifier> modifiers = new ArrayList<>();
 
-	float run(float original, Consumer<AttackListener> collect, Consumer<AttackListener> maximize) {
+	float run(float original, @Nullable LogEntry log, Consumer<AttackListener> collect, Consumer<AttackListener> maximize) {
 		frozen = false;
 		AttackEventHandler.getListeners().forEach(collect);
 		frozen = true;
-		finalDamage = accumulate(original);
+		finalDamage = accumulate(original, log);
 		maximized = true;
 		AttackEventHandler.getListeners().forEach(maximize);
 		return finalDamage;
 	}
 
-	private float accumulate(float val) {
+	private float accumulate(float val, @Nullable LogEntry log) {
 		Map<DamageModifier.Order, TreeMap<Integer, DamageModifier>> map = new TreeMap<>();
 		for (var e : modifiers) {
 			if (!map.containsKey(e.order())) {
@@ -37,11 +39,14 @@ public class DamageAccumulator {
 			sub.put(i, e);
 		}
 		for (var ent : map.entrySet()) {
+			if (log != null) log.startLayer(ent.getKey(), val);
 			float num = ent.getKey().type.start.start(val);
 			for (var e : ent.getValue().values()) {
 				num = e.modify(num);
+				if (log != null) log.processModifier(e, e.info(num));
 			}
 			val = ent.getKey().type.end.end(val, num);
+			if (log != null) log.endLayer(ent.getKey(), val);
 		}
 		return val;
 	}

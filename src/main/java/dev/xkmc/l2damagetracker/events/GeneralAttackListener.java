@@ -6,7 +6,6 @@ import dev.xkmc.l2damagetracker.contents.materials.generic.ExtraToolConfig;
 import dev.xkmc.l2damagetracker.contents.materials.generic.GenericTieredItem;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTypes;
-import dev.xkmc.l2library.capability.conditionals.ConditionalData;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,7 +49,7 @@ public class GeneralAttackListener implements AttackListener {
 		if (cache.getLivingAttackEvent() != null) {
 			DamageSource source = cache.getLivingAttackEvent().getSource();
 			if (source.getEntity() instanceof LivingEntity le) {
-				if (source.getDirectEntity() == le) {
+				if (source.is(L2DamageTypes.DIRECT)) {
 					setup.accept(le, le.getMainHandItem());
 				} else {
 					setup.accept(le, ItemStack.EMPTY);

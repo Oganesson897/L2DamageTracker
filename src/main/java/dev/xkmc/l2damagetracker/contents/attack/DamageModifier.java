@@ -36,6 +36,8 @@ public interface DamageModifier {
 		return new Nonlinear(Order.END_NONLINEAR, priority, func);
 	}
 
+	String info(float num);
+
 	enum Time {
 		CRIT,
 		ATTACK,
@@ -107,6 +109,11 @@ record Additive(Order order, float n) implements DamageModifier {
 		return 0;
 	}
 
+	@Override
+	public String info(float num) {
+		return n > 0 ? "+" + n : "" + n;
+	}
+
 }
 
 
@@ -122,6 +129,11 @@ record Multiplicative(Order order, float n) implements DamageModifier {
 		return 0;
 	}
 
+	@Override
+	public String info(float num) {
+		return "x" + n;
+	}
+
 }
 
 record Nonlinear(Order order, int priority, Float2FloatFunction func) implements DamageModifier {
@@ -131,4 +143,8 @@ record Nonlinear(Order order, int priority, Float2FloatFunction func) implements
 		return func.get(val);
 	}
 
+	@Override
+	public String info(float num) {
+		return "-> " + num;
+	}
 }

@@ -3,6 +3,7 @@ package dev.xkmc.l2damagetracker.contents.attack;
 import dev.xkmc.l2damagetracker.contents.damage.DamageState;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeWrapper;
+import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2library.init.L2Library;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -78,11 +79,11 @@ public class CreateSourceEvent {
 
 	public void enable(DamageState state) {
 		if (result == null) {
-			L2Library.LOGGER.warn("DamageType " + original.location() + " is not mutable");
+			L2DamageTracker.LOGGER.warn("DamageType " + original.location() + " is not mutable");
 			return;
 		}
 		if (!result.validState(state)) {
-			L2Library.LOGGER.warn("DamageType " + result.type().location() + " does not contain state " + state.getId());
+			L2DamageTracker.LOGGER.warn("DamageType " + result.type().location() + " does not contain state " + state.getId());
 			return;
 		}
 		if (result.isEnabled(state)) return;
@@ -99,7 +100,7 @@ public class CreateSourceEvent {
 			} else if (covered) {
 				next = result;
 			} else {
-				L2Library.LOGGER.warn("DamageType " + result.type().location() + " cannot enable state " + state.getId());
+				L2DamageTracker.LOGGER.warn("DamageType " + result.type().location() + " cannot enable state " + state.getId());
 				return;
 			}
 		}

@@ -29,17 +29,23 @@ import java.util.concurrent.CompletableFuture;
 
 public class L2DamageTypes extends DamageTypeAndTagsGen {
 
-	public static final DamageTypeRoot PLAYER_ATTACK = new DamageTypeRoot(L2DamageTracker.MODID, DamageTypes.PLAYER_ATTACK,
-			List.of(), (type) -> new DamageType("player", 0.1F));
-
-	public static final DamageTypeRoot MOB_ATTACK = new DamageTypeRoot(L2DamageTracker.MODID, DamageTypes.MOB_ATTACK,
-			List.of(), (type) -> new DamageType("mob", 0.1F));
-
 	public static final TagKey<DamageType> MATERIAL_MUX = TagKey.create(Registries.DAMAGE_TYPE,
 			new ResourceLocation(L2DamageTracker.MODID, "material_mux"));
 
 	public static final TagKey<DamageType> MAGIC = TagKey.create(Registries.DAMAGE_TYPE,
 			new ResourceLocation("forge", "is_magic"));
+
+	public static final TagKey<DamageType> NO_SCALE = TagKey.create(Registries.DAMAGE_TYPE,
+			new ResourceLocation("forge", "ignore_scaling"));
+
+	public static final TagKey<DamageType> DIRECT = TagKey.create(Registries.DAMAGE_TYPE,
+			new ResourceLocation("forge", "direct"));
+
+	public static final DamageTypeRoot PLAYER_ATTACK = new DamageTypeRoot(L2DamageTracker.MODID, DamageTypes.PLAYER_ATTACK,
+			List.of(DIRECT), (type) -> new DamageType("player", 0.1F));
+
+	public static final DamageTypeRoot MOB_ATTACK = new DamageTypeRoot(L2DamageTracker.MODID, DamageTypes.MOB_ATTACK,
+			List.of(DIRECT), (type) -> new DamageType("mob", 0.1F));
 
 	public static final DamageTypeTagGroup BYPASS_MAGIC = DamageTypeTagGroup.of(
 			DamageTypeTags.BYPASSES_ENCHANTMENTS, DamageTypeTags.BYPASSES_RESISTANCE,
@@ -85,8 +91,10 @@ public class L2DamageTypes extends DamageTypeAndTagsGen {
 			wrapper.gen(pvd, lookup);
 		}
 		pvd.tag(MATERIAL_MUX).add(DamageTypes.PLAYER_ATTACK, DamageTypes.MOB_ATTACK);
+		pvd.tag(DIRECT).add(DamageTypes.PLAYER_ATTACK, DamageTypes.MOB_ATTACK);
 		pvd.tag(MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC, DamageTypes.THORNS, DamageTypes.SONIC_BOOM,
 				DamageTypes.WITHER, DamageTypes.DRAGON_BREATH, DamageTypes.WITHER_SKULL);
+		pvd.tag(NO_SCALE).add(DamageTypes.THORNS, DamageTypes.STARVE, DamageTypes.DROWN, DamageTypes.DRY_OUT, DamageTypes.IN_WALL);
 		if (ModList.get().isLoaded(IronsSpellbooks.MODID)) {
 			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.FIRE_MAGIC.location());
 			pvd.tag(MAGIC).addOptionalTag(DamageTypeTagGenerator.ICE_MAGIC.location());

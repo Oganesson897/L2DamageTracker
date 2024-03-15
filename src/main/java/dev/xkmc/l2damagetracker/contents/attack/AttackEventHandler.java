@@ -92,7 +92,7 @@ public class AttackEventHandler {
 		if (event.getEntity().level().isClientSide())
 			return;
 		if (CACHE.size() > 1000) {
-			L2Library.LOGGER.error("attack cache too large: " + CACHE.size());
+			L2DamageTracker.LOGGER.error("attack cache too large: " + CACHE.size());
 			CACHE.clear();
 			return;
 		}
@@ -103,8 +103,8 @@ public class AttackEventHandler {
 				cache.recursive++;
 				if (L2DamageTrackerConfig.COMMON.enableCyclicDamageEventInterrupt.get() &&
 						cache.recursive >= L2DamageTrackerConfig.COMMON.cyclicDamageThreshold.get()) {
-					L2Library.LOGGER.error("Cyclic Damage Event Detected");
-					L2Library.LOGGER.throwing(Level.ERROR, new IllegalStateException("Cyclic Damage Event Detected"));
+					L2DamageTracker.LOGGER.error("Cyclic Damage Event Detected");
+					L2DamageTracker.LOGGER.throwing(Level.ERROR, new IllegalStateException("Cyclic Damage Event Detected"));
 					event.setCanceled(true);
 				}
 				return;
