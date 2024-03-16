@@ -2,6 +2,7 @@ package dev.xkmc.l2damagetracker.init;
 
 import com.hollingsworth.arsnouveau.ArsNouveau;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
 import dev.xkmc.l2damagetracker.contents.attributes.WrappedAttribute;
@@ -13,11 +14,12 @@ import dev.xkmc.l2library.base.L2Registrate;
 import dev.xkmc.l2library.serial.config.ConfigTypeEntry;
 import dev.xkmc.l2library.serial.config.PacketHandlerWithConfig;
 import dev.xkmc.l2tabs.init.L2Tabs;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(L2DamageTracker.MODID)
+@SuppressWarnings("unchecked")
 @Mod.EventBusSubscriber(modid = L2DamageTracker.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class L2DamageTracker {
 
@@ -39,17 +42,28 @@ public class L2DamageTracker {
 
 	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1);
 
-	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped("crit_rate", 0, 0, 1, "Weapon Crit Rate");
-	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped("crit_damage", 0, 0.5, 1000, "Weapon Crit Damage");
-	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped("bow_strength", 0, 1, 1000, "Projectile Strength");
-	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped("explosion_damage", 1, 0, 1000, "Explosion Damage");
-	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped("fire_damage", 0, 1, 1000, "Fire Damage");
-	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped("magic_damage", 0, 1, 1000, "Magic Damage");
-	public static final RegistryEntry<Attribute> ABSORB = reg("damage_absorption", 0, 10000, "Damage Absorption");
-	public static final RegistryEntry<Attribute> REDUCTION = reg("damage_reduction", 1, 10000, "Damage after Reduction");
+	public static final ProviderType<RegistrateTagsProvider.IntrinsicImpl<Attribute>> ATTR_TAGS =
+			ProviderType.register("tags/attribute", type -> (p, e) ->
+					new RegistrateTagsProvider.IntrinsicImpl<>(p, type, "attributes",
+							e.getGenerator().getPackOutput(), Registries.ATTRIBUTE, e.getLookupProvider(),
+							reg -> ForgeRegistries.ATTRIBUTES.getResourceKey(reg).orElseThrow(),
+							e.getExistingFileHelper()));
+
+	public static final TagKey<Attribute> PERCENTAGE = key("percentage");
+	public static final TagKey<Attribute> NEGATIVE = key("negative");
+
+	public static final RegistryEntry<WrappedAttribute> CRIT_RATE = regWrapped(REGISTRATE, "crit_rate", 0, 0, 1, "Weapon Crit Rate", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> CRIT_DMG = regWrapped(REGISTRATE, "crit_damage", 0.5, 0, 1000, "Weapon Crit Damage", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> BOW_STRENGTH = regWrapped(REGISTRATE, "bow_strength", 1, 0, 1000, "Projectile Strength", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> EXPLOSION_FACTOR = regWrapped(REGISTRATE, "explosion_damage", 1, 0, 1000, "Explosion Damage", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> FIRE_FACTOR = regWrapped(REGISTRATE, "fire_damage", 1, 0, 1000, "Fire Damage", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> MAGIC_FACTOR = regWrapped(REGISTRATE, "magic_damage", 1, 0, 1000, "Magic Damage", PERCENTAGE);
+	public static final RegistryEntry<WrappedAttribute> ABSORB = regWrapped(REGISTRATE, "damage_absorption", 0, 0, 10000, "Damage Absorption");
+	public static final RegistryEntry<WrappedAttribute> REDUCTION = regWrapped(REGISTRATE, "damage_reduction", 1, -10000, 10000, "Damage after Reduction", PERCENTAGE, NEGATIVE);
 
 	public static final ConfigTypeEntry<ArmorEffectConfig> ARMOR =
 			new ConfigTypeEntry<>(PACKET_HANDLER, "armor", ArmorEffectConfig.class);
+
 
 	public L2DamageTracker() {
 		L2DamageTrackerConfig.init();
@@ -92,18 +106,16 @@ public class L2DamageTracker {
 		DamageTypeRoot.generateAll();
 	}
 
-	private static RegistryEntry<Attribute> reg(String id, double def, double max, String name) {
-		REGISTRATE.addRawLang("attribute.name." + id, name);
-		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
-				() -> new RangedAttribute("attribute.name." + id, def, 0, max)
-						.setSyncable(true));
+	@SuppressWarnings({"unchecked"})
+	public static RegistryEntry<WrappedAttribute> regWrapped(L2Registrate reg, String id, double def, double min, double max, String name, TagKey<Attribute>... keys) {
+		reg.addRawLang("attribute." + reg.getModid() + "." + id, name);
+		return reg.generic(reg, id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
+				() -> new WrappedAttribute("attribute." + reg.getModid() + "." + id, def, min, max)
+						.setSyncable(true)).tag(ATTR_TAGS, keys).register();
 	}
 
-	private static RegistryEntry<WrappedAttribute> regWrapped(String id, double ins, double def, double max, String name) {
-		REGISTRATE.addRawLang("attribute.name." + id, name);
-		return REGISTRATE.simple(id, ForgeRegistries.ATTRIBUTES.getRegistryKey(),
-				() -> new WrappedAttribute("attribute.name." + id, ins, def, 0, max)
-						.setSyncable(true));
+	public static TagKey<Attribute> key(String id) {
+		return TagKey.create(Registries.ATTRIBUTE, new ResourceLocation(MODID, id));
 	}
 
 }

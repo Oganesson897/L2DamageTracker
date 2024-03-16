@@ -20,7 +20,7 @@
     },
     {
       "id": "l2damagetracker:explosion_damage",
-      "intrinsic": 1.0,
+      "intrinsic": 0.0,
       "order": 16000,
       "usePercent": true
     },

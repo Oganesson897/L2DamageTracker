@@ -59,9 +59,9 @@ public class LogEntry {
 		this.attacker = attacker;
 		this.time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS").format(new Date());
 		info = L2DamageTrackerConfig.COMMON.printDamageTrace.get();
-		playerHurt = target instanceof Player player && L2DamageTrackerConfig.COMMON.savePlayerHurt.get() ?
+		playerHurt = target instanceof Player player && LogHelper.savePlayerHurt(player) ?
 				path(player, attacker, "hurt", time) : null;
-		playerAttack = attacker instanceof Player player && L2DamageTrackerConfig.COMMON.savePlayerAttack.get() ?
+		playerAttack = attacker instanceof Player player && LogHelper.savePlayerAttack(player) ?
 				path(player, target, "attack", time) : null;
 		trace = playerHurt != null || playerAttack != null;
 		log = info || trace;
