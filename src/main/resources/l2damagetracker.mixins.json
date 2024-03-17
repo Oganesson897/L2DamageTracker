@@ -6,6 +6,7 @@
   "refmap": "l2damagetracker.refmap.json",
   "mixins": [
 	"DamageSourcesMixin",
+	"LivingEntityMixin",
 	"PlayerMixin"
   ],
   "client": [

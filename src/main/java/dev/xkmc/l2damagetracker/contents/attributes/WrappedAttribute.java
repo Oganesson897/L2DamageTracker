@@ -13,8 +13,8 @@ public class WrappedAttribute extends RangedAttribute {
 	public double getWrappedValue(LivingEntity le) {
 		var ins = le.getAttribute(this);
 		if (ins == null) return getMinValue();
-		if (ins.getBaseValue() != 0) {
-			ins.setBaseValue(0);
+		if (ins.getBaseValue() != getDefaultValue()) {
+			ins.setBaseValue(getDefaultValue());
 		}
 		return ins.getValue();
 	}

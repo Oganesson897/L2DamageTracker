@@ -3,6 +3,7 @@ package dev.xkmc.l2damagetracker.contents.attack;
 import dev.xkmc.l2damagetracker.init.L2DamageTracker;
 import dev.xkmc.l2damagetracker.init.data.L2DamageTrackerConfig;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -50,8 +51,7 @@ public class LogEntry {
 	private final boolean log, info, trace;
 	private final List<String> output = new ArrayList<>();
 	private final Map<DamageModifier, String> modifiers = new HashMap<>();
-	private final Path playerAttack;
-	private final Path playerHurt;
+	private final List<Path> saves = new ArrayList<>();
 
 	private LogEntry(DamageSource source, LivingEntity target, @Nullable LivingEntity attacker) {
 		this.source = source;
@@ -59,11 +59,11 @@ public class LogEntry {
 		this.attacker = attacker;
 		this.time = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS").format(new Date());
 		info = L2DamageTrackerConfig.COMMON.printDamageTrace.get();
-		playerHurt = target instanceof Player player && LogHelper.savePlayerHurt(player) ?
-				path(player, attacker, "hurt", time) : null;
-		playerAttack = attacker instanceof Player player && LogHelper.savePlayerAttack(player) ?
-				path(player, target, "attack", time) : null;
-		trace = playerHurt != null || playerAttack != null;
+		if (target instanceof ServerPlayer player && LogHelper.savePlayerHurt(player))
+			saves.add(path(player, attacker, "hurt", time));
+		if (attacker instanceof ServerPlayer player && LogHelper.savePlayerAttack(player))
+			saves.add(path(player, target, "attack", time));
+		trace = !saves.isEmpty();
 		log = info || trace;
 		if (log) {
 			output.add("------ Damage Tracker Profile START ------");
@@ -85,11 +85,8 @@ public class LogEntry {
 					L2DamageTracker.LOGGER.info(e);
 				}
 			}
-			if (playerAttack != null) {
-				write(playerAttack, e -> output.forEach(e::println));
-			}
-			if (playerHurt != null) {
-				write(playerHurt, e -> output.forEach(e::println));
+			for (var path : saves) {
+				write(path, e -> output.forEach(e::println));
 			}
 		}
 	}

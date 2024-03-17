@@ -6,6 +6,7 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.xkmc.l2damagetracker.contents.attack.AttackEventHandler;
 import dev.xkmc.l2damagetracker.contents.attributes.WrappedAttribute;
+import dev.xkmc.l2damagetracker.contents.curios.TotemUseToClient;
 import dev.xkmc.l2damagetracker.contents.damage.DamageTypeRoot;
 import dev.xkmc.l2damagetracker.events.ArsEventCompat;
 import dev.xkmc.l2damagetracker.events.GeneralAttackListener;
@@ -31,6 +32,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
+
 @Mod(L2DamageTracker.MODID)
 @SuppressWarnings("unchecked")
 @Mod.EventBusSubscriber(modid = L2DamageTracker.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -40,7 +43,9 @@ public class L2DamageTracker {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final L2Registrate REGISTRATE = new L2Registrate(MODID);
 
-	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(new ResourceLocation(MODID, "main"), 1);
+	public static final PacketHandlerWithConfig PACKET_HANDLER = new PacketHandlerWithConfig(
+			new ResourceLocation(MODID, "main"), 2,
+			e -> e.create(TotemUseToClient.class, PLAY_TO_CLIENT));
 
 	public static final ProviderType<RegistrateTagsProvider.IntrinsicImpl<Attribute>> ATTR_TAGS =
 			ProviderType.register("tags/attribute", type -> (p, e) ->

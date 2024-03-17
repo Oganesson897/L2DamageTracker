@@ -9,6 +9,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,9 +21,18 @@ import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 public class AttrTooltip {
 
 	public static MutableComponent getDesc(Attribute attr, double val, AttributeModifier.Operation op) {
+		return getDesc(attr, val, op, null, (val < 0 ^ isNegative(attr)) ? ChatFormatting.RED : ChatFormatting.BLUE);
+	}
+
+	public static MutableComponent getText(Attribute attr, double val, AttributeModifier.Operation op) {
+		return getDesc(attr, val, op, ChatFormatting.AQUA, ChatFormatting.GRAY);
+	}
+
+	public static MutableComponent getDesc(Attribute attr, double val, AttributeModifier.Operation op,
+										   @Nullable ChatFormatting num, ChatFormatting all) {
 		var text = Component.translatable(attr.getDescriptionId());
 		MutableComponent base;
-		if (isMult(attr)) {
+		if (AttrTooltip.isMult(attr)) {
 			if (op == AttributeModifier.Operation.ADDITION) {
 				base = Component.literal(val < 0 ? "-" : "+");
 				base.append(ATTRIBUTE_MODIFIER_FORMAT.format(Math.abs(val * 100)));
@@ -41,9 +51,11 @@ public class AttrTooltip {
 				base.append("%");
 			}
 		}
+		if (num != null)
+			base = Component.empty().append(base.withStyle(num));
 		base.append(" ");
 		base.append(text);
-		return base.withStyle((val < 0 ^ isNegative(attr)) ? ChatFormatting.RED : ChatFormatting.BLUE);
+		return base.withStyle(all);
 	}
 
 	public static List<Component> modifyTooltip(List<Component> tooltips, Multimap<Attribute, AttributeModifier> attributes, boolean remove) {
@@ -90,22 +102,6 @@ public class AttrTooltip {
 			}
 		}
 		return map;
-	}
-
-	public static MutableComponent simpleAdd(Component text, int val) {
-		MutableComponent base = Component.literal(val < 0 ? "-" : "+");
-		base.append(ATTRIBUTE_MODIFIER_FORMAT.format(Math.abs(val)));
-		base.append(" ");
-		base.append(text);
-		return base.withStyle(val < 0 ? ChatFormatting.RED : ChatFormatting.BLUE);
-	}
-
-	public static MutableComponent simpleMult(Component text, double val) {
-		MutableComponent base = Component.literal(val < 0 ? "-" : "+");
-		base.append(ATTRIBUTE_MODIFIER_FORMAT.format(Math.abs(val * 100)));
-		base.append("% ");
-		base.append(text);
-		return base.withStyle(val < 0 ? ChatFormatting.RED : ChatFormatting.BLUE);
 	}
 
 	public static boolean isMult(Attribute attr) {
