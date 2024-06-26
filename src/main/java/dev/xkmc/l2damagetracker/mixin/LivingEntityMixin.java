@@ -2,8 +2,11 @@ package dev.xkmc.l2damagetracker.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import dev.xkmc.l2damagetracker.contents.curios.TotemHelper;
 import dev.xkmc.l2serial.util.Wrappers;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.ForgeHooks;
@@ -27,10 +30,16 @@ public abstract class LivingEntityMixin {
 		return ForgeHooks.onLivingDamage(self, source, ans);
 	}
 
-
 	@WrapOperation(at = @At(value = "INVOKE", remap = false, target = "Lnet/minecraftforge/common/ForgeHooks;onLivingDamage(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;F)F"), method = "actuallyHurt")
 	public float l2damagetracker$actuallyHurt$moveLivingDamagePost(LivingEntity self, DamageSource source, float damage, Operation<Float> original) {
 		return damage;
+	}
+
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), method = "hurt")
+	public void l2damagetracker$hurt$knockbackCheck(LivingEntity instance, double strength, double x, double z, Operation<Void> original, @Local(argsOnly = true) LocalRef<DamageSource> source) {
+		if (!source.get().is(DamageTypeTags.NO_IMPACT)) {
+			original.call(instance, strength, x, z);
+		}
 	}
 
 }
